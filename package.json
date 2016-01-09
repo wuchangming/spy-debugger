@@ -1,0 +1,22 @@
+{
+  "name": "spy-debugger",
+  "version": "0.0.1",
+  "description": "web page one-stop remote network debugger",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wuchangming/spy-debugger.git"
+  },
+  "keywords": [
+    "debugger"
+  ],
+  "author": "wuchangming",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wuchangming/spy-debugger/issues"
+  },
+  "homepage": "https://github.com/wuchangming/spy-debugger#readme"
+}
