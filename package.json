@@ -18,5 +18,14 @@
   "bugs": {
     "url": "https://github.com/wuchangming/spy-debugger/issues"
   },
-  "homepage": "https://github.com/wuchangming/spy-debugger#readme"
+  "homepage": "https://github.com/wuchangming/spy-debugger#readme",
+  "dependencies": {
+    "harmon": "^1.3.1",
+    "http-proxy": "^1.13.1",
+    "mitm": "^1.2.0",
+    "redbird": "^0.4.14",
+    "requires-port": "^1.0.0",
+    "through2": "^2.0.1",
+    "weinre": "2.0.0-pre-I0Z7U9OV"
+  }
 }
