@@ -13,6 +13,11 @@ Mac 下
 ```
     sudo npm install spy-debugger -g
 ```
+## Demo
+
+#### 轻轻松松修改微信小游戏页面^.^
+![drawing](demo/img/thumb_IMG_0122_1024.jpg)
+
 
 ## 三分钟上手
 
