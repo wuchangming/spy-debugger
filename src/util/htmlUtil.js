@@ -1,11 +1,9 @@
-"use strict";
-
 var htmlUtil = exports;
 
 // inject script into html
-htmlUtil.injectScriptIntoHtml = function (html, script) {
+htmlUtil.injectScriptIntoHtml = function(html, script) {
     html = html.replace(/(<head>)/i, function (match) {
         return script + match;
     });
     return html;
-};
+}

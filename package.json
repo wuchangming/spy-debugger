@@ -1,17 +1,23 @@
 {
   "name": "spy-debugger",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "web page one-stop remote network debugger",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "test": "DEBUG=spy-debugger node-debug index.js"
+    "test": "DEBUG=spy-debugger node-debug index.js",
+    "build": "babel src -d lib"
+  },
+  "bin": {
+    "spy-debugger": "lib/index.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/wuchangming/spy-debugger.git"
   },
   "keywords": [
-    "debugger"
+    "spy",
+    "debugger",
+    "weinre"
   ],
   "author": "wuchangming",
   "license": "MIT",
@@ -20,8 +26,12 @@
   },
   "homepage": "https://github.com/wuchangming/spy-debugger#readme",
   "dependencies": {
+    "commander": "^2.9.0",
     "debug": "^2.2.0",
     "through2": "^2.0.1",
     "weinre": "2.0.0-pre-I0Z7U9OV"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.6.5"
   }
 }

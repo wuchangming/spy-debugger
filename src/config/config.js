@@ -1,6 +1,4 @@
-"use strict";
-
-var SPY_WEINRE_DOMAIN = 'spyweinrefortest.com';
+const SPY_WEINRE_DOMAIN = 'spyweinrefortest.com';
 
 var config = exports;
 config.SPY_WEINRE_DOMAIN = SPY_WEINRE_DOMAIN;
@@ -10,4 +8,4 @@ config.logColor = {
     FgRed: "\x1b[31m",
     FgGreen: "\x1b[32m",
     Reset: "\x1b[0m"
-};
+}
