@@ -42,7 +42,7 @@ function startWeinreServer (port) {
     });
     weinreServer.on('listening', () => {
         // auto open debugger page
-        if (!/window/i.test(process.platform)) {
+        if (!/win/i.test(process.platform)) {
             child_process.exec(`open http://127.0.0.1:${port}/client`);
         } else {
             child_process.exec(`start http://127.0.0.1:${port}/client`);
