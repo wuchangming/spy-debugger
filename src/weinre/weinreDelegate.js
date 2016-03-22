@@ -46,7 +46,7 @@ function startWeinreServer (port) {
     });
     weinreServer.on('listening', () => {
 
-        fs.readFile(path.resolve(__dirname, '../config/inject.js.template.html'), 'utf8', function (err,tpl) {
+        fs.readFile(path.resolve(__dirname, '../../template/inject.js.template.html'), 'utf8', function (err,tpl) {
             if (err) {
                 return console.log(err);
             }
