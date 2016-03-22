@@ -20,7 +20,7 @@ module.exports = class SpyProxy {
     }
     createProxyServer (options) {
         options = options || {};
-        this.weinewPort = options.weinewPort;
+        this.injectScriptTag = options.injectScriptTag;
         var port = options.port || 9888;
         var server = new http.Server();
         server.listen(port, () => {
@@ -122,22 +122,22 @@ module.exports = class SpyProxy {
 
             var isGzip = httpUtil.isGzip(proxyRes);
             if (isGzip) {
-
                 proxyRes.pipe(new zlib.Gunzip())
                 .pipe(through(function (chunk, enc, callback) {
-                    var chunkString = chunk.toString();
-                    var newChunkString = htmlUtil.injectScriptIntoHtml(chunkString,`<script src="http://${config.SPY_WEINRE_DOMAIN}:${_this.weinewPort}/target/target-script-min.js#anonymous"></script>`);
-                    this.push(new Buffer(newChunkString));
-                    callback();
+                    chunkReplace(this, chunk, enc, callback, _this.injectScriptTag);
                 })).pipe(new zlib.Gzip()).pipe(res);
             } else {
                 proxyRes.pipe(through(function (chunk, enc, callback) {
-                    var chunkString = chunk.toString();
-                    var newChunkString = htmlUtil.injectScriptIntoHtml(chunkString,`<script src="http://${config.SPY_WEINRE_DOMAIN}:${_this.weinewPort}/target/target-script-min.js#anonymous"></script>`);
-                    this.push(new Buffer(newChunkString));
-                    callback();
+                    chunkReplace(this, chunk, enc, callback, _this.injectScriptTag);
                 })).pipe(res);
             }
         }
     }
+}
+
+function chunkReplace (_this, chunk, enc, callback, injectScriptTag) {
+    var chunkString = chunk.toString();
+    var newChunkString = htmlUtil.injectScriptIntoHtml(chunkString, injectScriptTag);
+    _this.push(new Buffer(newChunkString));
+    callback();
 }

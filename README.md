@@ -33,7 +33,13 @@ Mac 下
 ## 自定义端口
 (默认端口：9888)
 ```
-spy-debugger port 8888
+spy-debugger -p 8888
+```
+
+## 是否让weinre监控iframe加载的页面
+(默认： false)
+```
+spy-debugger -i true
 ```
 ## 更多
 `spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
