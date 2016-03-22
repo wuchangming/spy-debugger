@@ -10,6 +10,7 @@ const logColor = config.logColor;
 const program = require('commander');
 const fs = require('fs');
 const htmlUtil = require('../util/htmlUtil');
+const path = require('path');
 
 var spyProxyPort;
 var showIframe = false;
@@ -45,7 +46,7 @@ function startWeinreServer (port) {
     });
     weinreServer.on('listening', () => {
 
-        fs.readFile('./src/config/inject.js.template.html', 'utf8', function (err,tpl) {
+        fs.readFile(path.resolve(__dirname, '../config/inject.js.template.html'), 'utf8', function (err,tpl) {
             if (err) {
                 return console.log(err);
             }
