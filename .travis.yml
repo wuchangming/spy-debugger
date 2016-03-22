@@ -1,4 +1,5 @@
 before_install:
+- npm install bable -g
 - npm run build
 language: node_js
 node_js:
