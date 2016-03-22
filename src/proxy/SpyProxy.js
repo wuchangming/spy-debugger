@@ -2,6 +2,7 @@
 
 const http = require('http');
 const url = require('url');
+const net = require('net');
 const through = require('through2');
 const httpUtil = require('../util/httpUtil');
 const zlib = require('zlib');
@@ -13,6 +14,11 @@ const logColor = config.logColor;
 const domain = require('domain');
 const ip = require('ip');
 var address = ip.address();
+
+var d = domain.create();
+d.on('error', function (err) {
+    console.log(err.message);
+});
 
 module.exports = class SpyProxy {
     constructor(options) {
@@ -28,12 +34,23 @@ module.exports = class SpyProxy {
                 console.error(e);
             });
             server.on('request', (req, res) => {
-                var d = domain.create();
-                d.on('error', function (err) {
-                    console.log(err.message);
-                });
                 d.run(() => {
                     this.requestHandler(req, res);
+                });
+            });
+            // tunneling for https
+            server.on('connect', (req, cltSocket, head) => {
+                d.run(() => {
+                    // connect to an origin server
+                    var srvUrl = url.parse(`http://${req.url}`);
+                    var srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
+                        cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
+                        'Proxy-agent: SpyProxy\r\n' +
+                        '\r\n');
+                        srvSocket.write(head);
+                        srvSocket.pipe(cltSocket);
+                        cltSocket.pipe(srvSocket);
+                    });
                 });
             });
         });

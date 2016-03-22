@@ -1,11 +1,12 @@
 {
   "name": "spy-debugger",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "web page one-stop remote network debugger",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -R landing test/index",
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "dev": "node-debug dev/testSpyProxy.js"
   },
   "bin": {
     "spy-debugger": "lib/index.js"
