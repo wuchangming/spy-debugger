@@ -66,7 +66,7 @@ module.exports = class SpyProxy {
         if(host === config.SPY_WEINRE_DOMAIN) {
             host = '127.0.0.1';
         }
-
+        req.headers['host'] = urlObject.hostname;
         var rOptions = {
             protocol: urlObject.protocol,
             host: host,
