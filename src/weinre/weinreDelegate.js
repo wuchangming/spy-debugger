@@ -6,7 +6,7 @@ const weinre = require('weinre');
 const child_process = require('child_process');
 const SpyProxy = require('../proxy/SpyProxy');
 const config = require('../config/config');
-const logColor = config.logColor;
+const colors = require('colors');
 const program = require('commander');
 const fs = require('fs');
 const htmlUtil = require('../util/htmlUtil');
@@ -60,7 +60,7 @@ function startWeinreServer (port) {
                 child_process.exec(`start http://127.0.0.1:${port}/client`);
             } else {
                 child_process.exec(`open http://127.0.0.1:${port}/client`);            }
-                console.log(`${logColor.FgGreen}%s${logColor.Reset}`,`浏览器打开 ---> http://127.0.0.1:${port}/client`);
+                console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
             });
 
         });

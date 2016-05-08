@@ -10,7 +10,7 @@ const htmlUtil = require('../util/htmlUtil');
 const os = require('os');
 const debug = require('debug')('spy-debugger');
 const config = require('../config/config');
-const logColor = config.logColor;
+const colors = require('colors');
 const domain = require('domain');
 const ip = require('ip');
 var address = ip.address();
@@ -54,7 +54,7 @@ module.exports = class SpyProxy {
                 });
             });
         });
-        console.log(`${logColor.FgGreen}%s${logColor.Reset}`,`移动设备设置HTTP代理到本机。本机IP地址：${address}，端口号为：${port}`);
+        console.log(colors.green(`移动设备设置HTTP代理到本机。本机IP地址：${address}，端口号为：${port}`));
     }
     requestHandler(req, res) {
         var urlObject = url.parse(req.url);

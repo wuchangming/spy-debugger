@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -R landing test/index",
-    "build": "babel src -d lib",
+    "build": "babel -w src -d lib",
     "dev": "node-debug dev/testSpyProxy.js"
   },
   "bin": {
@@ -27,12 +27,14 @@
   },
   "homepage": "https://github.com/wuchangming/spy-debugger#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "commander": "^2.9.0",
     "debug": "^2.2.0",
     "ip": "^1.1.2",
     "lodash": "^4.6.1",
     "through2": "^2.0.1",
-    "weinre": "2.0.0-pre-I0Z7U9OV"
+    "weinre": "2.0.0-pre-I0Z7U9OV",
+    "node-mitmproxy": "2.0.3-alpha"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
