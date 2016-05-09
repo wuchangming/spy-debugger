@@ -49,7 +49,7 @@ module.exports = {
                                 return match.toUpperCase()
                             });
                             var newkey = key;
-                            if (isHtml && key === 'content-length') {
+                            if (isHtml && (key === 'content-length' || key === 'content-security-policy')) {
                                 // do nothing
                             } else {
                                 res.setHeader(newkey, proxyRes.headers[key]);
