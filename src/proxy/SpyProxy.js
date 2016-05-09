@@ -1,157 +1,83 @@
-'use strict'
-
-const http = require('http');
 const url = require('url');
-const net = require('net');
-const through = require('through2');
+const mitmProxy = require('node-mitmproxy');
 const httpUtil = require('../util/httpUtil');
 const zlib = require('zlib');
-const htmlUtil = require('../util/htmlUtil');
-const os = require('os');
-const debug = require('debug')('spy-debugger');
+const through = require('through2');
 const config = require('../config/config');
-const colors = require('colors');
-const domain = require('domain');
-const ip = require('ip');
-var address = ip.address();
+const htmlUtil = require('../util/htmlUtil');
 
-var d = domain.create();
-d.on('error', function (err) {
-    console.log(err.message);
-});
+module.exports = {
 
-module.exports = class SpyProxy {
-    constructor(options) {
-        this.proxyServer = this.createProxyServer(options);
-    }
-    createProxyServer (options) {
-        options = options || {};
-        this.injectScriptTag = options.injectScriptTag;
-        var port = options.port || 9888;
-        var server = new http.Server();
-        server.listen(port, () => {
-            server.on('error', (e) => {
-                console.error(e);
-            });
-            server.on('request', (req, res) => {
-                d.run(() => {
-                    this.requestHandler(req, res);
-                });
-            });
-            // tunneling for https
-            server.on('connect', (req, cltSocket, head) => {
-                d.run(() => {
-                    // connect to an origin server
-                    var srvUrl = url.parse(`http://${req.url}`);
-                    var srvSocket = net.connect(srvUrl.port, srvUrl.hostname, () => {
-                        cltSocket.write('HTTP/1.1 200 Connection Established\r\n' +
-                        'Proxy-agent: SpyProxy\r\n' +
-                        '\r\n');
-                        srvSocket.write(head);
-                        srvSocket.pipe(cltSocket);
-                        cltSocket.pipe(srvSocket);
+    createProxy ({
+        injectScriptTag,
+        port = 9888
+    }) {
+        mitmProxy.createProxy({
+            port,
+            sslConnectInterceptor: (req, cltSocket, head) => {
+
+                var srvUrl = url.parse(`https://${req.url}`);
+                // 忽略微信的推广页
+                if (srvUrl.host === 'mp.weixin.qq.com:443') {
+                    return false;
+                }
+                // 只拦截浏览器的https请求
+                if (req.headers && req.headers['user-agent'] && /^Mozilla/.test(req.headers['user-agent'])) {
+                    return true
+                } else {
+                    return false
+                }
+            },
+            requestInterceptor: (rOptions, req, res, ssl, next) => {
+                if (rOptions.hostname === config.SPY_WEINRE_DOMAIN) {
+                    rOptions.protocol = 'http:'
+                    rOptions.hostname = '127.0.0.1'
+                }
+                next();
+            },
+            responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
+                var isHtml = httpUtil.isHtml(proxyRes);
+                var contentLengthIsZero = (() => {
+                    return proxyRes.headers['content-length'] == 0;
+                })();
+                if (!isHtml || contentLengthIsZero) {
+                    next();
+                } else {
+                    Object.keys(proxyRes.headers).forEach(function(key) {
+                        if(proxyRes.headers[key] != undefined){
+                            var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
+                                return match.toUpperCase()
+                            });
+                            var newkey = key;
+                            if (isHtml && key === 'content-length') {
+                                // do nothing
+                            } else {
+                                res.setHeader(newkey, proxyRes.headers[key]);
+                            }
+                        }
                     });
-                });
-            });
-        });
-        console.log(colors.green(`移动设备设置HTTP代理到本机。本机IP地址：${address}，端口号为：${port}`));
-    }
-    requestHandler(req, res) {
-        var urlObject = url.parse(req.url);
-        var orginHost = req.headers['host'];
 
-        debug('request urlObject ---> ', urlObject);
+                    res.writeHead(proxyRes.statusCode);
 
-        var host = orginHost.split(':')[0];
-        if(host === config.SPY_WEINRE_DOMAIN) {
-            host = '127.0.0.1';
-        }
-        req.headers['host'] = urlObject.hostname;
-        var rOptions = {
-            protocol: urlObject.protocol,
-            host: host,
-            method: req.method,
-            port: urlObject.port || 80,
-            path: urlObject.path
-        }
-        rOptions.headers = req.headers;
+                    var isGzip = httpUtil.isGzip(proxyRes);
 
-        var proxyReq;
-        if (host === '127.0.0.1') {
-            proxyReq = this.responseHandler(rOptions, req, res, this.ignoreResponse);
-        } else {
-            proxyReq = this.responseHandler(rOptions, req, res);
-        }
-
-        req.on('aborted', function () {
-            proxyReq.abort();
-        });
-
-        req.pipe(proxyReq);
-
-    }
-    responseHandler(rOptions, req, res, responseCallback) {
-        return new http.ClientRequest(rOptions, (proxyRes) => {
-            if (responseCallback) {
-                responseCallback(req, res,proxyRes);
-            } else {
-                this.interceptResponse(req, res, proxyRes);
-            }
-        });
-    }
-    ignoreResponse(req, res, proxyRes) {
-        Object.keys(proxyRes.headers).forEach(function(key) {
-            if(proxyRes.headers[key] != undefined){
-                var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
-                    return match.toUpperCase()
-                });
-                var newkey = key;
-                res.setHeader(newkey, proxyRes.headers[key]);
-            }
-        });
-        res.writeHead(proxyRes.statusCode);
-        proxyRes.pipe(res);
-    }
-    interceptResponse(req, res, proxyRes) {
-        var _this = this;
-        var isHtml = httpUtil.isHtml(proxyRes);
-        var contentLengthIsZero = (() => {
-            return proxyRes.headers['content-length'] == 0;
-        })();
-        if (!isHtml || contentLengthIsZero) {
-            this.ignoreResponse(req, res, proxyRes);
-        } else {
-            Object.keys(proxyRes.headers).forEach(function(key) {
-                if(proxyRes.headers[key] != undefined){
-                    var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
-                        return match.toUpperCase()
-                    });
-                    var newkey = key;
-                    if (isHtml && key === 'content-length') {
-                        // do nothing
+                    if (isGzip) {
+                        proxyRes.pipe(new zlib.Gunzip())
+                        .pipe(through(function (chunk, enc, callback) {
+                            chunkReplace(this, chunk, enc, callback, injectScriptTag);
+                        })).pipe(new zlib.Gzip()).pipe(res);
                     } else {
-                        res.setHeader(newkey, proxyRes.headers[key]);
+                        proxyRes.pipe(through(function (chunk, enc, callback) {
+                            chunkReplace(this, chunk, enc, callback, injectScriptTag);
+                        })).pipe(res);
                     }
                 }
-            });
-
-            res.writeHead(proxyRes.statusCode);
-
-            var isGzip = httpUtil.isGzip(proxyRes);
-            if (isGzip) {
-                proxyRes.pipe(new zlib.Gunzip())
-                .pipe(through(function (chunk, enc, callback) {
-                    chunkReplace(this, chunk, enc, callback, _this.injectScriptTag);
-                })).pipe(new zlib.Gzip()).pipe(res);
-            } else {
-                proxyRes.pipe(through(function (chunk, enc, callback) {
-                    chunkReplace(this, chunk, enc, callback, _this.injectScriptTag);
-                })).pipe(res);
+                next();
             }
-        }
+        });
+
     }
 }
-
 function chunkReplace (_this, chunk, enc, callback, injectScriptTag) {
     var chunkString = chunk.toString();
     var newChunkString = htmlUtil.injectScriptIntoHtml(chunkString, injectScriptTag);
