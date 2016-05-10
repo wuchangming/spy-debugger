@@ -5,6 +5,8 @@ const zlib = require('zlib');
 const through = require('through2');
 const config = require('../config/config');
 const htmlUtil = require('../util/htmlUtil');
+const path = require('path');
+const fs = require('fs');
 
 module.exports = {
 
@@ -29,6 +31,21 @@ module.exports = {
                 }
             },
             requestInterceptor: (rOptions, req, res, ssl, next) => {
+
+                if (rOptions.hostname === config.SPY_DEBUGGER_DOMAIN && rOptions.path === '/cert'){
+                    var userHome = process.env.HOME || process.env.USERPROFILE;
+                    var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
+                    try {
+                        var fileString = fs.readFileSync(certPath);
+                        res.setHeader('Content-Type', 'application/x-x509-ca-cert');
+                        res.end(fileString.toString());
+                    } catch (e) {
+                        console.log(e);
+                        res.end('please create certificate first!!');
+                    }
+                    next();
+                    return;
+                }
                 if (rOptions.hostname === config.SPY_WEINRE_DOMAIN) {
                     rOptions.protocol = 'http:'
                     rOptions.hostname = '127.0.0.1'
