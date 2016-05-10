@@ -12,7 +12,8 @@ module.exports = {
 
     createProxy ({
         injectScriptTag,
-        port = 9888
+        port = 9888,
+        weinrePort
     }) {
         mitmProxy.createProxy({
             port,
@@ -47,8 +48,9 @@ module.exports = {
                     return;
                 }
                 if (rOptions.hostname === config.SPY_WEINRE_DOMAIN) {
-                    rOptions.protocol = 'http:'
-                    rOptions.hostname = '127.0.0.1'
+                    rOptions.protocol = 'http:';
+                    rOptions.hostname = '127.0.0.1';
+                    rOptions.port = weinrePort;
                 }
                 next();
             },

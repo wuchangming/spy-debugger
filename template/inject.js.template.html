@@ -1,7 +1,7 @@
 <script>
     var showIframe = <%= showIframe %>;
     if (window.top === window.self || showIframe) {
-        document.write('<script src="//<%= weinreDomain %>:<%= weinrePort %>/target/target-script-min.js#anonymous"><\/script>');
+        document.write('<script src="//<%= weinreDomain %>/target/target-script-min.js#anonymous"><\/script>');
     } else {
         //do noting
     }

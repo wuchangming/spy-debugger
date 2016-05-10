@@ -11,10 +11,9 @@ htmlUtil.injectScriptIntoHtml = function(html, script) {
     return html;
 }
 
-htmlUtil.createScriptTag = function (tpl, showIframe, weinreDomain, weinrePort) {
+htmlUtil.createScriptTag = function (tpl, showIframe, weinreDomain) {
     return _.template(tpl)({
         showIframe,
-        weinreDomain,
-        weinrePort
+        weinreDomain
     });
 }
