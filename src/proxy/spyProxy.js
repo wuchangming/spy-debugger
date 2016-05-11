@@ -13,7 +13,8 @@ module.exports = {
     createProxy ({
         injectScriptTag,
         port = 9888,
-        weinrePort
+        weinrePort,
+        autoDetectBrowser = true
     }) {
         mitmProxy.createProxy({
             port,
@@ -24,8 +25,9 @@ module.exports = {
                 if (srvUrl.host === 'mp.weixin.qq.com:443') {
                     return false;
                 }
+
                 // 只拦截浏览器的https请求
-                if (req.headers && req.headers['user-agent'] && /^Mozilla/.test(req.headers['user-agent'])) {
+                if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /^Mozilla/.test(req.headers['user-agent']))) {
                     return true
                 } else {
                     return false

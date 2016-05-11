@@ -46,5 +46,13 @@ spy-debugger -p 8888
 ```
 spy-debugger -i true
 ```
+
+#### 是否只拦截浏览器发起的https请求
+(默认： true)
+```
+spy-debugger -b false
+```
+有些浏览器发出的connect请求没有正确的携带userAgent，这个判断有时候会出错，如**UC浏览器**。这个时候需要设置为false。大多数情况建议启用默认配置：true，由于目前大量App应用自身（非WebView）发出的请求会使用到SSL pinning技术，自定义的证书将不能通过app的证书校验。
+
 ## 更多
 `spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
