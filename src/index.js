@@ -12,7 +12,11 @@ program.version(require('../package.json').version)
 program.parse(process.argv);
 
 var cusSpyProxyPort = program.port;
-var cusShowIframe = program.showIframe;
+
+var cusShowIframe = false;
+if (program.showIframe === 'true') {
+    cusShowIframe = true;
+}
 
 var autoDetectBrowser = true;
 if (program.autoDetectBrowser === 'false') {
