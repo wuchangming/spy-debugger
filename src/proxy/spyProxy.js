@@ -18,6 +18,7 @@ module.exports = {
     }) {
         mitmProxy.createProxy({
             port,
+            getCertSocketTimeout: 3 * 1000,
             sslConnectInterceptor: (req, cltSocket, head) => {
 
                 var srvUrl = url.parse(`https://${req.url}`);
