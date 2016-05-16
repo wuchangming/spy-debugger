@@ -5,7 +5,7 @@
 1、一站式页面调试工具，远程调试任何手机浏览器页面，任何手机移动端webview（如：微信，HybirdApp等）*HTTP/HTTPS*。  
 2、`spy-debugger`内部集成了[`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)。  
 3、支持HTTPS页面的调试。  
-4、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不照成任何影响。
+4、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不造成任何影响。
 
 ## 安装
 Windows 下
