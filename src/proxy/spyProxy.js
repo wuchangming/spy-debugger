@@ -7,6 +7,7 @@ const config = require('../config/config');
 const htmlUtil = require('../util/htmlUtil');
 const path = require('path');
 const fs = require('fs');
+const colors = require('colors');
 
 module.exports = {
 
@@ -16,6 +17,7 @@ module.exports = {
         weinrePort,
         autoDetectBrowser = true
     }) {
+        console.log(colors.green('正在启动代理'));
         mitmProxy.createProxy({
             port,
             getCertSocketTimeout: 3 * 1000,
