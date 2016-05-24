@@ -29,7 +29,7 @@ weinreDelegate.run = function run({
     cusAutoDetectBrowser
 }) {
     spyProxyPort = cusSpyProxyPort;
-    showIframe = showIframe;
+    showIframe = cusShowIframe;
     autoDetectBrowser = cusAutoDetectBrowser;
 
     let unBoundedPort;
