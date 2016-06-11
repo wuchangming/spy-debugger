@@ -20,8 +20,8 @@ Mac 下
 
 ## Demo
 
-#### 轻轻松松修改微信小游戏页面^.^
-<img src="demo/img/thumb_IMG_0122_1024.jpg" height="600px" width="350px" />
+#### 调试页面
+<img src="demo/img/demo.png" width="650px" />
 
 ## 三分钟上手
 
