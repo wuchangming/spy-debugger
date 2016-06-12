@@ -8,6 +8,8 @@ const htmlUtil = require('../util/htmlUtil');
 const path = require('path');
 const fs = require('fs');
 const colors = require('colors');
+const charset = require('charset');
+const iconv = require('iconv-lite');
 
 module.exports = {
 
@@ -67,17 +69,20 @@ module.exports = {
                 if (!isHtml || contentLengthIsZero) {
                     next();
                 } else {
+
                     Object.keys(proxyRes.headers).forEach(function(key) {
                         if(proxyRes.headers[key] != undefined){
                             var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
                                 return match.toUpperCase()
                             });
                             var newkey = key;
+
                             if (isHtml && (key === 'content-length' || key === 'content-security-policy')) {
                                 // do nothing
                             } else {
                                 res.setHeader(newkey, proxyRes.headers[key]);
                             }
+
                         }
                     });
 
@@ -88,12 +93,15 @@ module.exports = {
                     if (isGzip) {
                         proxyRes.pipe(new zlib.Gunzip())
                         .pipe(through(function (chunk, enc, callback) {
-                            chunkReplace(this, chunk, enc, callback, injectScriptTag);
-                        })).pipe(new zlib.Gzip()).pipe(res);
+                            chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
+                        }))
+                        .pipe(new zlib.Gzip()).pipe(res);
                     } else {
-                        proxyRes.pipe(through(function (chunk, enc, callback) {
-                            chunkReplace(this, chunk, enc, callback, injectScriptTag);
-                        })).pipe(res);
+                        proxyRes
+                        .pipe(through(function (chunk, enc, callback) {
+                            chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
+                        }))
+                        .pipe(res);
                     }
                 }
                 next();
@@ -102,9 +110,24 @@ module.exports = {
 
     }
 }
-function chunkReplace (_this, chunk, enc, callback, injectScriptTag) {
-    var chunkString = chunk.toString();
+function chunkReplace (_this, chunk, enc, callback, injectScriptTag, proxyRes) {
+    var _charset = charset(proxyRes, chunk);
+    var chunkString;
+    if (_charset != null && _charset != 'utf-8') {
+        chunkString = iconv.decode(chunk, _charset);
+    } else {
+        chunkString = chunk.toString();
+    }
+
     var newChunkString = htmlUtil.injectScriptIntoHtml(chunkString, injectScriptTag);
-    _this.push(new Buffer(newChunkString));
+
+    var buffer;
+    if (_charset != null && _charset != 'utf-8') {
+        buffer = iconv.encode(newChunkString, _charset);
+    } else {
+        buffer = new Buffer(newChunkString);
+    }
+
+    _this.push(buffer);
     callback();
 }
