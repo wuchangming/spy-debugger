@@ -10,6 +10,7 @@ const fs = require('fs');
 const colors = require('colors');
 const charset = require('charset');
 const iconv = require('iconv-lite');
+const jschardet = require('jschardet');
 
 module.exports = {
 
@@ -111,7 +112,7 @@ module.exports = {
     }
 }
 function chunkReplace (_this, chunk, enc, callback, injectScriptTag, proxyRes) {
-    var _charset = charset(proxyRes, chunk);
+    var _charset = charset(proxyRes, chunk) || jschardet.detect(chunk).encoding.toLowerCase();
     var chunkString;
     if (_charset != null && _charset != 'utf-8') {
         chunkString = iconv.decode(chunk, _charset);
