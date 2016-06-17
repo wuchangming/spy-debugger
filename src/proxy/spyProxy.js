@@ -27,10 +27,6 @@ module.exports = {
             sslConnectInterceptor: (req, cltSocket, head) => {
 
                 var srvUrl = url.parse(`https://${req.url}`);
-                // 忽略微信的推广页
-                if (srvUrl.host === 'mp.weixin.qq.com:443') {
-                    return false;
-                }
 
                 // 只拦截浏览器的https请求
                 if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /^Mozilla/.test(req.headers['user-agent']))) {
@@ -60,6 +56,8 @@ module.exports = {
                     rOptions.hostname = '127.0.0.1';
                     rOptions.port = weinrePort;
                 }
+                // delete Accept-Encoding
+                delete rOptions.headers['accept-encoding']
                 next();
             },
             responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
