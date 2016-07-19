@@ -43,6 +43,12 @@ Mac 下
 spy-debugger -p 8888
 ```
 
+#### 设置外部代理
+```
+spy-debugger -e http://127.0.0.1:8888
+```
+spy-debugger本身没有提供抓请求包功能，但是可以通过设置外部代理来配合其它抓包代理工具一起使用，如：Charles、Fiddler。
+
 #### 是否让weinre监控iframe加载的页面
 (默认： false)
 ```
