@@ -18,10 +18,13 @@ module.exports = {
         injectScriptTag,
         port = 9888,
         weinrePort,
-        autoDetectBrowser = true
+        autoDetectBrowser = true,
+        externalProxy
     }) {
         console.log(colors.green('正在启动代理'));
+
         mitmProxy.createProxy({
+            externalProxy,
             port,
             getCertSocketTimeout: 3 * 1000,
             sslConnectInterceptor: (req, cltSocket, head) => {
@@ -37,7 +40,7 @@ module.exports = {
             },
             requestInterceptor: (rOptions, req, res, ssl, next) => {
 
-                if (rOptions.hostname === config.SPY_DEBUGGER_DOMAIN && rOptions.path === '/cert'){
+                if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rOptions.path === '/cert'){
                     var userHome = process.env.HOME || process.env.USERPROFILE;
                     var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
                     try {
@@ -51,10 +54,12 @@ module.exports = {
                     next();
                     return;
                 }
-                if (rOptions.hostname === config.SPY_WEINRE_DOMAIN) {
+                // console.log(req.path);
+                if (rOptions.headers.host === config.SPY_WEINRE_DOMAIN) {
                     rOptions.protocol = 'http:';
                     rOptions.hostname = '127.0.0.1';
                     rOptions.port = weinrePort;
+                    rOptions.agent = false;
                 }
                 // delete Accept-Encoding
                 delete rOptions.headers['accept-encoding']

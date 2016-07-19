@@ -22,16 +22,18 @@ var showIframe = false;
 
 var weinreDelegate = module.exports;
 var autoDetectBrowser = true;
+var externalProxy;
 
 weinreDelegate.run = function run({
     cusSpyProxyPort,
     cusShowIframe,
-    cusAutoDetectBrowser
+    cusAutoDetectBrowser,
+    cusExternalProxy
 }) {
     spyProxyPort = cusSpyProxyPort;
     showIframe = cusShowIframe;
     autoDetectBrowser = cusAutoDetectBrowser;
-
+    externalProxy = cusExternalProxy;
     let unBoundedPort;
     // get an unbounded port
     let tempServer  = new http.Server();
@@ -70,7 +72,8 @@ function startWeinreServer (port) {
                     port: spyProxyPort,
                     injectScriptTag: injectScriptTag,
                     weinrePort: port,
-                    autoDetectBrowser
+                    autoDetectBrowser,
+                    externalProxy: externalProxy
                 });
                 // auto open debugger page
                 if (process.platform === 'win32' || process.platform === 'win64') {

@@ -8,6 +8,7 @@ program.version(require('../package.json').version)
 .option('-p, --port [value]', 'start port')
 .option('-i, --showIframe [value]', 'spy iframe window')
 .option('-b, --autoDetectBrowser [value]', 'Auto detect Browser Request')
+.option('-e, --externalProxy [value]', 'set external Proxy')
 
 program.parse(process.argv);
 
@@ -25,6 +26,7 @@ if (program.autoDetectBrowser === 'false') {
 
 weinreDelegate.createCA();
 weinreDelegate.run({
+    cusExternalProxy: program.externalProxy,
     cusSpyProxyPort,
     cusShowIframe,
     cusAutoDetectBrowser: autoDetectBrowser
