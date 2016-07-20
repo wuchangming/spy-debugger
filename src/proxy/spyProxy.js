@@ -59,6 +59,8 @@ module.exports = {
                     rOptions.protocol = 'http:';
                     rOptions.hostname = '127.0.0.1';
                     rOptions.port = weinrePort;
+                    // trick for non-transparent proxy
+                    rOptions.path = (url.parse(rOptions.path)).path;
                     rOptions.agent = false;
                 }
                 // delete Accept-Encoding
