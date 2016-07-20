@@ -32,7 +32,7 @@ module.exports = {
                 var srvUrl = url.parse(`https://${req.url}`);
 
                 // 只拦截浏览器的https请求
-                if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /^Mozilla/.test(req.headers['user-agent']))) {
+                if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /Mozilla/.test(req.headers['user-agent']))) {
                     return true
                 } else {
                     return false
@@ -40,7 +40,14 @@ module.exports = {
             },
             requestInterceptor: (rOptions, req, res, ssl, next) => {
 
-                if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rOptions.path === '/cert'){
+                var rPath;
+                if (rOptions.path) {
+                    rPath = (url.parse(rOptions.path)).path;
+                } else {
+                    rOptions.path = '/';
+                }
+
+                if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert'){
                     var userHome = process.env.HOME || process.env.USERPROFILE;
                     var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
                     try {
@@ -60,7 +67,7 @@ module.exports = {
                     rOptions.hostname = '127.0.0.1';
                     rOptions.port = weinrePort;
                     // trick for non-transparent proxy
-                    rOptions.path = (url.parse(rOptions.path)).path;
+                    rOptions.path = rPath;
                     rOptions.agent = false;
                 }
                 // delete Accept-Encoding
