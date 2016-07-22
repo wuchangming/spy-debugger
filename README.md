@@ -6,7 +6,8 @@
 2、`spy-debugger`内部集成了[`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)和代理[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)。  
 3、支持HTTPS页面的调试。  
 4、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不造成任何影响。  
-5、[操作简单](#三分钟上手)  
+5、可以配合其它代理工具一起使用 [(设置外部代理)](#设置外部代理)  
+6、[操作简单](#三分钟上手)  
 
 ## Demo
 
