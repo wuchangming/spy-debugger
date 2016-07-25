@@ -8,21 +8,22 @@ var defaultExternalProxy = exports;
 defaultExternalProxy.createExternalProxy = function (callback) {
     //create cert when you want to use https features
     //please manually trust this rootCA when it is the first time you run it
-    var userHome = process.env.HOME || process.env.USERPROFILE;
-    var certDir = path.join(userHome, "/.anyproxy_certs/");
-    if(!fs.existsSync(certDir)){
-        try{
-            fs.mkdirSync(certDir);
-        }catch(e){
-            console.error('fail to create certDir at:' + certDir);
+    if(!proxy.isRootCAFileExists()) {
+        var userHome = process.env.HOME || process.env.USERPROFILE;
+        var certDir = path.join(userHome, "/.anyproxy_certs/");
+        if(!fs.existsSync(certDir)){
+            try{
+                fs.mkdirSync(certDir);
+            }catch(e){
+                console.error('fail to create certDir at:' + certDir);
+            }
         }
+        var mitmCrt = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
+        var mitmKey = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.key.pem');
+
+        fs.createReadStream(mitmCrt).pipe(fs.createWriteStream(path.join(certDir, './rootCA.crt')));
+        fs.createReadStream(mitmKey).pipe(fs.createWriteStream(path.join(certDir, './rootCA.key')));
     }
-    var mitmCrt = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
-    var mitmKey = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.key.pem');
-
-    fs.createReadStream(mitmCrt).pipe(fs.createWriteStream(path.join(certDir, './rootCA.crt')));
-    fs.createReadStream(mitmKey).pipe(fs.createWriteStream(path.join(certDir, './rootCA.key')));
-
 
     let unBoundedPort1,unBoundedPort2,unBoundedPort3;
     // get an unbounded port
