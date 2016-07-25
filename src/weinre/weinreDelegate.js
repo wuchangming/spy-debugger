@@ -12,6 +12,9 @@ const htmlUtil = require('../util/htmlUtil');
 const path = require('path');
 const domain = require('domain');
 const mitmproxy = require('node-mitmproxy');
+const _ = require('lodash');
+
+
 var d = domain.create();
 d.on('error', function (err) {
     console.log(err.message);
@@ -23,17 +26,20 @@ var showIframe = false;
 var weinreDelegate = module.exports;
 var autoDetectBrowser = true;
 var externalProxy;
+var cache = false;
 
 weinreDelegate.run = function run({
     cusSpyProxyPort,
     cusShowIframe,
     cusAutoDetectBrowser,
-    cusExternalProxy
+    cusExternalProxy,
+    cusCache
 }) {
     spyProxyPort = cusSpyProxyPort;
     showIframe = cusShowIframe;
     autoDetectBrowser = cusAutoDetectBrowser;
     externalProxy = cusExternalProxy;
+    cache = cusCache;
     let unBoundedPort;
     // get an unbounded port
     let tempServer  = new http.Server();
@@ -50,7 +56,7 @@ weinreDelegate.createCA = function () {
 }
 
 function startWeinreServer (port) {
-
+    console.log(colors.green('正在启动代理'));
     d.run(() => {
 
         let weinreServer = weinre.run({
@@ -73,15 +79,49 @@ function startWeinreServer (port) {
                     injectScriptTag: injectScriptTag,
                     weinrePort: port,
                     autoDetectBrowser,
-                    externalProxy: externalProxy
+                    externalProxy: externalProxy,
+                    cache,
+                    successCB: function (externalProxyPorts) {
+                        if (!externalProxy) {
+                            var webPort = externalProxyPorts.webPort;
+                            var guiServer = new http.Server();
+                            guiServer.listen(() => {
+                                var guiPort = guiServer.address().port;
+                                if (process.platform === 'win32' || process.platform === 'win64') {
+                                    child_process.exec(`start http://127.0.0.1:${guiPort}`);
+                                    console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
+                                } else {
+                                    child_process.exec(`open http://127.0.0.1:${guiPort}`);
+                                    console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
+                                }
+                            });
+                            guiServer.on('error', (e) => {
+                                console.log(e);
+                            })
+                            var fp = path.join(__dirname, '../../template/wrap.html');
+                            var fileTemp = (fs.readFileSync(fp)).toString();
+                            var fileString = _.template(fileTemp)({
+                                weinreUrl: `http://127.0.0.1:${port}/client`,
+                                anyProxyUrl: `http://127.0.0.1:${webPort}`
+                            });
+                            guiServer.on('request', (req, res) => {
+                                res.setHeader('Content-Type', 'text/html;charset=utf-8');
+                                res.end(fileString);
+                            })
+
+                        } else {
+                            // auto open debugger page
+                            if (process.platform === 'win32' || process.platform === 'win64') {
+                                child_process.exec(`start http://127.0.0.1:${port}/client`);
+                                console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
+                            } else {
+                                child_process.exec(`open http://127.0.0.1:${port}/client`);
+                                console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
+                            }
+                        }
+
+                    }
                 });
-                // auto open debugger page
-                if (process.platform === 'win32' || process.platform === 'win64') {
-                    child_process.exec(`start http://127.0.0.1:${port}/client`);
-                } else {
-                    child_process.exec(`open http://127.0.0.1:${port}/client`);
-                    console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
-                }
             });
             weinreServer.on('error', (e) => {
                 console.error(e);

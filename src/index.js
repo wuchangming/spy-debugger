@@ -9,6 +9,7 @@ program.version(require('../package.json').version)
 .option('-i, --showIframe [value]', 'spy iframe window')
 .option('-b, --autoDetectBrowser [value]', 'Auto detect Browser Request')
 .option('-e, --externalProxy [value]', 'set external Proxy')
+.option('-c, --cache [value]', 'set no cache')
 
 program.parse(process.argv);
 
@@ -24,10 +25,16 @@ if (program.autoDetectBrowser === 'false') {
     autoDetectBrowser = false;
 }
 
+var cusCache = false;
+if (program.cache === 'true') {
+    cusCache = true;
+}
+
 weinreDelegate.createCA();
 weinreDelegate.run({
     cusExternalProxy: program.externalProxy,
     cusSpyProxyPort,
     cusShowIframe,
-    cusAutoDetectBrowser: autoDetectBrowser
+    cusAutoDetectBrowser: autoDetectBrowser,
+    cusCache
 });

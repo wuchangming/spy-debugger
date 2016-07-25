@@ -11,6 +11,7 @@ const colors = require('colors');
 const charset = require('charset');
 const iconv = require('iconv-lite');
 const jschardet = require('jschardet');
+const defaultExternalProxy = require('./externalProxy');
 
 module.exports = {
 
@@ -19,107 +20,132 @@ module.exports = {
         port = 9888,
         weinrePort,
         autoDetectBrowser = true,
-        externalProxy
+        externalProxy,
+        successCB,
+        cache
     }) {
-        console.log(colors.green('正在启动代理'));
 
-        mitmProxy.createProxy({
-            externalProxy,
-            port,
-            getCertSocketTimeout: 3 * 1000,
-            sslConnectInterceptor: (req, cltSocket, head) => {
+        var createMitmProxy = () => {
 
-                var srvUrl = url.parse(`https://${req.url}`);
+            mitmProxy.createProxy({
+                externalProxy,
+                port,
+                getCertSocketTimeout: 3 * 1000,
+                sslConnectInterceptor: (req, cltSocket, head) => {
 
-                // 只拦截浏览器的https请求
-                if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /Mozilla/.test(req.headers['user-agent']))) {
-                    return true
-                } else {
-                    return false
-                }
-            },
-            requestInterceptor: (rOptions, req, res, ssl, next) => {
+                    var srvUrl = url.parse(`https://${req.url}`);
 
-                var rPath;
-                if (rOptions.path) {
-                    rPath = (url.parse(rOptions.path)).path;
-                } else {
-                    rOptions.path = '/';
-                }
-
-                if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert'){
-                    var userHome = process.env.HOME || process.env.USERPROFILE;
-                    var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
-                    try {
-                        var fileString = fs.readFileSync(certPath);
-                        res.setHeader('Content-Type', 'application/x-x509-ca-cert');
-                        res.end(fileString.toString());
-                    } catch (e) {
-                        console.log(e);
-                        res.end('please create certificate first!!');
-                    }
-                    next();
-                    return;
-                }
-                // console.log(req.path);
-                if (rOptions.headers.host === config.SPY_WEINRE_DOMAIN) {
-                    rOptions.protocol = 'http:';
-                    rOptions.hostname = '127.0.0.1';
-                    rOptions.port = weinrePort;
-                    // trick for non-transparent proxy
-                    rOptions.path = rPath;
-                    rOptions.agent = false;
-                }
-                // delete Accept-Encoding
-                delete rOptions.headers['accept-encoding']
-                next();
-            },
-            responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
-                var isHtml = httpUtil.isHtml(proxyRes);
-                var contentLengthIsZero = (() => {
-                    return proxyRes.headers['content-length'] == 0;
-                })();
-                if (!isHtml || contentLengthIsZero) {
-                    next();
-                } else {
-
-                    Object.keys(proxyRes.headers).forEach(function(key) {
-                        if(proxyRes.headers[key] != undefined){
-                            var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
-                                return match.toUpperCase()
-                            });
-                            var newkey = key;
-
-                            if (isHtml && (key === 'content-length' || key === 'content-security-policy')) {
-                                // do nothing
-                            } else {
-                                res.setHeader(newkey, proxyRes.headers[key]);
-                            }
-
-                        }
-                    });
-
-                    res.writeHead(proxyRes.statusCode);
-
-                    var isGzip = httpUtil.isGzip(proxyRes);
-
-                    if (isGzip) {
-                        proxyRes.pipe(new zlib.Gunzip())
-                        .pipe(through(function (chunk, enc, callback) {
-                            chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
-                        }))
-                        .pipe(new zlib.Gzip()).pipe(res);
+                    // 只拦截浏览器的https请求
+                    if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /Mozilla/.test(req.headers['user-agent']))) {
+                        return true
                     } else {
-                        proxyRes
-                        .pipe(through(function (chunk, enc, callback) {
-                            chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
-                        }))
-                        .pipe(res);
+                        return false
                     }
+                },
+                requestInterceptor: (rOptions, req, res, ssl, next) => {
+
+                    var rPath;
+                    if (rOptions.path) {
+                        rPath = (url.parse(rOptions.path)).path;
+                    } else {
+                        rOptions.path = '/';
+                    }
+
+                    if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert'){
+                        var userHome = process.env.HOME || process.env.USERPROFILE;
+                        var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
+                        try {
+                            var fileString = fs.readFileSync(certPath);
+                            res.setHeader('Content-Type', 'application/x-x509-ca-cert');
+                            res.end(fileString.toString());
+                        } catch (e) {
+                            console.log(e);
+                            res.end('please create certificate first!!');
+                        }
+                        next();
+                        return;
+                    }
+                    // console.log(req.path);
+                    if (rOptions.headers.host === config.SPY_WEINRE_DOMAIN) {
+                        rOptions.protocol = 'http:';
+                        rOptions.hostname = '127.0.0.1';
+                        rOptions.port = weinrePort;
+                        // trick for non-transparent proxy
+                        rOptions.path = rPath;
+                        rOptions.agent = false;
+                    }
+                    // delete Accept-Encoding
+                    delete rOptions.headers['accept-encoding'];
+
+                    // no cache
+                    if (!cache) {
+                        delete rOptions.headers['if-modified-since'];
+                        delete rOptions.headers['last-modified'];
+                        delete rOptions.headers['if-none-match'];
+                    }
+
+                    next();
+                },
+                responseInterceptor: (req, res, proxyReq, proxyRes, ssl, next) => {
+                    var isHtml = httpUtil.isHtml(proxyRes);
+                    var contentLengthIsZero = (() => {
+                        return proxyRes.headers['content-length'] == 0;
+                    })();
+                    if (!isHtml || contentLengthIsZero) {
+                        next();
+                    } else {
+
+                        Object.keys(proxyRes.headers).forEach(function(key) {
+                            if(proxyRes.headers[key] != undefined){
+                                var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
+                                    return match.toUpperCase()
+                                });
+                                var newkey = key;
+
+                                if (isHtml && (key === 'content-length' || key === 'content-security-policy')) {
+                                    // do nothing
+                                } else {
+                                    res.setHeader(newkey, proxyRes.headers[key]);
+                                }
+
+                            }
+                        });
+
+                        res.writeHead(proxyRes.statusCode);
+
+                        var isGzip = httpUtil.isGzip(proxyRes);
+
+                        if (isGzip) {
+                            proxyRes.pipe(new zlib.Gunzip())
+                            .pipe(through(function (chunk, enc, callback) {
+                                chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
+                            }))
+                            .pipe(new zlib.Gzip()).pipe(res);
+                        } else {
+                            proxyRes
+                            .pipe(through(function (chunk, enc, callback) {
+                                chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
+                            }))
+                            .pipe(res);
+                        }
+                    }
+                    next();
                 }
-                next();
-            }
-        });
+            });
+        }
+
+        if (!externalProxy) {
+            defaultExternalProxy.createExternalProxy((externalProxyPorts) => {
+                var externalProxyPort = externalProxyPorts.port;
+                var externalProxyWebPort = externalProxyPorts.webPort;
+                externalProxy = 'http://localhost:' + externalProxyPort;
+                createMitmProxy();
+                successCB(externalProxyPorts);
+            });
+        } else {
+            createMitmProxy();
+            successCB(null);
+        }
 
     }
 }
