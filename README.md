@@ -1,13 +1,13 @@
 关于spy-debugger
 ==========
+一站式页面调试、抓包工具。远程调试任何手机浏览器页面，任何手机移动端webview（如：微信，HybirdApp等）HTTP/HTTPS  
 
 [![npm](https://img.shields.io/npm/dt/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![Build Status](https://travis-ci.org/wuchangming/spy-debugger.svg?branch=master)](https://travis-ci.org/wuchangming/spy-debugger)  
-
-1、一站式页面调试工具。远程调试任何手机浏览器页面，任何手机移动端webview（如：微信，HybirdApp等）*HTTP/HTTPS*。  
+1、页面调试＋抓包  
 2、[操作简单](#三分钟上手)   
 3、**支持HTTPS**。  
-4、`spy-debugger`内部集成了[`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)，同时支持页面调试和请求抓包。  
+4、`spy-debugger`内部集成了[`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)。  
 5、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不造成任何影响。  
 6、可以配合其它代理工具一起使用(默认使用AnyProxy) [(设置外部代理)](#设置外部代理默认使用anyproxy)  
 
