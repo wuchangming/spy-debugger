@@ -12,7 +12,12 @@ const charset = require('charset');
 const iconv = require('iconv-lite');
 const jschardet = require('jschardet');
 const defaultExternalProxy = require('./externalProxy');
+const domain = require('domain');
 
+var d = domain.create();
+d.on('error', function (err) {
+    console.log(err.message);
+});
 module.exports = {
 
     createProxy ({
@@ -135,13 +140,15 @@ module.exports = {
         }
 
         if (!externalProxy) {
-            defaultExternalProxy.createExternalProxy((externalProxyPorts) => {
-                var externalProxyPort = externalProxyPorts.port;
-                var externalProxyWebPort = externalProxyPorts.webPort;
-                externalProxy = 'http://localhost:' + externalProxyPort;
-                createMitmProxy();
-                successCB(externalProxyPorts);
-            });
+            d.run(() => {
+                defaultExternalProxy.createExternalProxy((externalProxyPorts) => {
+                    var externalProxyPort = externalProxyPorts.port;
+                    var externalProxyWebPort = externalProxyPorts.webPort;
+                    externalProxy = 'http://localhost:' + externalProxyPort;
+                    createMitmProxy();
+                    successCB(externalProxyPorts);
+                });
+            })
         } else {
             createMitmProxy();
             successCB(null);
