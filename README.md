@@ -5,6 +5,8 @@
 [![npm](https://img.shields.io/npm/dt/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![Build Status](https://travis-ci.org/wuchangming/spy-debugger.svg?branch=master)](https://travis-ci.org/wuchangming/spy-debugger)  
 
+Language: [English](README_EN.md)
+
 特性
 ------------
 1、页面调试＋抓包  

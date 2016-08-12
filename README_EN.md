@@ -5,13 +5,15 @@ Spy-debugger is one-stop pages inspection and debugger proxy. Spy-debugger can i
 [![npm](https://img.shields.io/npm/dt/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![Build Status](https://travis-ci.org/wuchangming/spy-debugger.svg?branch=master)](https://travis-ci.org/wuchangming/spy-debugger)  
 
+语言: [中文](./README.md)
+
 Functions
 ------------
 1、HTML page inspection ＋ debugger  
 2、[Easy to use](#Only 3 mins to set up)  
-3、**Support HTTPS** 
+3、**Support HTTPS**
 4、`spy-debugger` integrated [`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)  
-5、`spy-debugger` automately overlooks the HTTPS requests from native App, and it only intercepts the HTTPS requests from webview. It will not cause any impacts to the native App that used SSL pinning. 
+5、`spy-debugger` automately overlooks the HTTPS requests from native App, and it only intercepts the HTTPS requests from webview. It will not cause any impacts to the native App that used SSL pinning.
 6、`spy-debugger` can be better to use other debugger proxies such as Charles. the default debugger proxy in `spy-debugger` is AnyProxy.[(Set up the exterior proxy)](#Set up the exterior proxy (default proxy AnyProxy))  
 
 
@@ -20,17 +22,17 @@ Demo
 #### Page inspection
 <img src="demo/img/demo.png" width="650px" />
 
-#### Debugger 
+#### Debugger
 <img src="demo/img/AnyProxy.jpg" width="650px" />
 
 Install
 ------------
-Windows 
+Windows
 ```
     npm install spy-debugger -g
 ```
 
-Mac 
+Mac
 ```
     sudo npm install spy-debugger -g
 ```
