@@ -8,7 +8,7 @@ Spy-debugger is one-stop pages inspection and debugger proxy. Spy-debugger can i
 Functions
 ------------
 1、HTML page inspection ＋ debugger  
-2、[Easy to use](#Only 3 mins to set up)   
+2、[Easy to use](#Only 3 mins to set up)  
 3、**Support HTTPS** 
 4、`spy-debugger` integrated [`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)  
 5、`spy-debugger` automately overlooks the HTTPS requests from native App, and it only intercepts the HTTPS requests from webview. It will not cause any impacts to the native App that used SSL pinning. 
