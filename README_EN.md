@@ -13,7 +13,7 @@ Functions
 2、[Easy to use](#Only 3 mins to set up)  
 3、**Support HTTPS**  
 4、`spy-debugger` integrated [`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)  
-5、`spy-debugger` automately overlooks the HTTPS requests from native App, and it only intercepts the HTTPS requests from webview. It will not cause any impacts to the native App that used SSL pinning.
+5、`spy-debugger` automately overlooks the HTTPS requests from native App, and it only intercepts the HTTPS requests from webview. It will not cause any impacts to the native App that used SSL pinning.  
 6、`spy-debugger` can be better to use other debugger proxies such as Charles. the default debugger proxy in `spy-debugger` is AnyProxy.[(Set up the exterior proxy)](#Set up the exterior proxy (default proxy AnyProxy))  
 
 
