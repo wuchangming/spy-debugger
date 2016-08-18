@@ -2,6 +2,8 @@
 'use strict'
 const program = require('commander');
 const weinreDelegate = require('./weinre/weinreDelegate');
+const colors = require('colors');
+const http = require('http');
 
 
 program.version(require('../package.json').version)
@@ -13,7 +15,7 @@ program.version(require('../package.json').version)
 
 program.parse(process.argv);
 
-var cusSpyProxyPort = program.port;
+var cusSpyProxyPort = program.port || 9888;
 
 var cusShowIframe = false;
 if (program.showIframe === 'true') {
@@ -31,10 +33,35 @@ if (program.cache === 'true') {
 }
 
 weinreDelegate.createCA();
-weinreDelegate.run({
-    cusExternalProxy: program.externalProxy,
-    cusSpyProxyPort,
-    cusShowIframe,
-    cusAutoDetectBrowser: autoDetectBrowser,
-    cusCache
-});
+
+let tempServer = new http.Server();
+
+var createTempServerPromise = (port) => {
+    return new Promise((resolve, reject) => {
+        tempServer.listen(port, () => {
+            tempServer.close(() => {
+                resolve();
+            })
+        });
+        tempServer.on('error', (e) => {
+            console.error(colors.red('警告：启动失败', e));
+            console.error(colors.red('检查端口' + port + '是否被占用'));
+            reject(e)
+        })
+
+    });
+}
+
+var tempServerPromise= createTempServerPromise(cusSpyProxyPort)
+
+tempServerPromise.then(() => {
+    weinreDelegate.run({
+        cusExternalProxy: program.externalProxy,
+        cusSpyProxyPort,
+        cusShowIframe,
+        cusAutoDetectBrowser: autoDetectBrowser,
+        cusCache
+    });
+}, (e) => {
+    throw e;
+})
