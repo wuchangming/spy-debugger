@@ -86,14 +86,16 @@ function startWeinreServer (port) {
                             var webPort = externalProxyPorts.webPort;
                             var guiServer = new http.Server();
                             guiServer.listen(() => {
-                                var guiPort = guiServer.address().port;
-                                if (process.platform === 'win32' || process.platform === 'win64') {
-                                    child_process.exec(`start http://127.0.0.1:${guiPort}`);
-                                    console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
-                                } else {
-                                    child_process.exec(`open http://127.0.0.1:${guiPort}`);
-                                    console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
-                                }
+                                setTimeout(() => {
+                                    var guiPort = guiServer.address().port;
+                                    if (process.platform === 'win32' || process.platform === 'win64') {
+                                        child_process.exec(`start http://127.0.0.1:${guiPort}`);
+                                        console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
+                                    } else {
+                                        child_process.exec(`open http://127.0.0.1:${guiPort}`);
+                                        console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
+                                    }
+                                }, 600)
                             });
                             guiServer.on('error', (e) => {
                                 console.log(e);
