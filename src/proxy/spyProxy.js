@@ -11,8 +11,9 @@ const colors = require('colors');
 const charset = require('charset');
 const iconv = require('iconv-lite');
 const jschardet = require('jschardet');
-const defaultExternalProxy = require('./externalProxy');
 const domain = require('domain');
+const childProcess = require('child_process');
+
 
 var d = domain.create();
 d.on('error', function (err) {
@@ -141,13 +142,35 @@ module.exports = {
 
         if (!externalProxy) {
             d.run(() => {
-                defaultExternalProxy.createExternalProxy((externalProxyPorts) => {
+
+                let ports
+
+                var childProxy = childProcess.fork(`${__dirname}/externalChildProcess`)
+                childProxy.send({
+                    type: 'start'
+                });
+                childProxy.on('message', (externalProxyPorts) => {
+                    ports = externalProxyPorts
                     var externalProxyPort = externalProxyPorts.port;
                     var externalProxyWebPort = externalProxyPorts.webPort;
                     externalProxy = 'http://localhost:' + externalProxyPort;
                     createMitmProxy();
                     successCB(externalProxyPorts);
                 });
+                let restartFun = () => {
+                    console.log(colors.yellow(`anyproxy异常退出，尝试重启`));
+                    let childProxy = childProcess.fork(`${__dirname}/externalChildProcess`)
+                    childProxy.send({
+                        type: 'restart',
+                        ports
+                    });
+                    childProxy.on('exit', function (e) {
+                        restartFun()
+                    })
+                }
+                childProxy.on('exit', function (e) {
+                    restartFun()
+                })
             })
         } else {
             createMitmProxy();

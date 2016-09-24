@@ -31,6 +31,7 @@
   "dependencies": {
     "anyproxy": "3.10.3",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
+    "babel-polyfill": "^6.13.0",
     "charset": "^1.0.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
