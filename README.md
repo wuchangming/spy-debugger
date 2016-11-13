@@ -20,7 +20,7 @@ Language: [English](README_EN.md)
 
 Demo
 ------------
-#### 调试页面
+#### 微信调试页面
 <img src="demo/img/demo.png" width="650px" />
 
 #### 抓包
