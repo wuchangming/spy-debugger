@@ -24,7 +24,7 @@ Demo
 <img src="demo/img/demo.png" width="650px" />
 
 #### Debugger
-<img src="demo/img/AnyProxy.jpg" width="650px" />
+<img src="demo/img/AnyProxy.png" width="650px" />
 
 Install
 ------------
