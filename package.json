@@ -7,7 +7,8 @@
     "test": "mocha -R landing test/index",
     "build": "babel -w src -d lib",
     "dev": "node-debug dev/testSpyProxy.js",
-    "prepublish": "babel src -d lib"
+    "prepublish": "babel src -d lib",
+    "postinstall": "node lib/scripts/postinstall.js"
   },
   "bin": {
     "spy-debugger": "lib/index.js"
