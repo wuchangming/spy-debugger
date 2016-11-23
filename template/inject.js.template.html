@@ -2,6 +2,25 @@
     var showIframe = <%= showIframe %>;
     if (window.top === window.self || showIframe) {
         document.write('<script src="//<%= weinreDomain %>/target/target-script-min.js#anonymous"><\/script>');
+        if (<%= contentEditable %>) {
+            var callBack = function () {
+                document.body.style.webkitUserSelect="auto";
+                document.body.style.webkitTouchCallout="default";
+                document.body.contentEditable=true;
+            }
+            var completed = function () {
+                document.removeEventListener("DOMContentLoaded", completed);
+                window.removeEventListener("load", completed);
+                callBack();
+            }
+            if (document.readyState === "complete" ||
+                (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+                window.setTimeout(callBack);
+            } else {
+                document.addEventListener("DOMContentLoaded", completed);
+                window.addEventListener("load", completed);
+            }
+        }
     } else {
         //do noting
     }

@@ -14,9 +14,15 @@ htmlUtil.injectScriptIntoHtml = function(html, script) {
     return html;
 }
 
-htmlUtil.createScriptTag = function (tpl, showIframe, weinreDomain) {
+htmlUtil.createScriptTag = function ({
+    tpl,
+    showIframe,
+    contentEditable,
+    weinreDomain
+}) {
     return _.template(tpl)({
         showIframe,
-        weinreDomain
+        weinreDomain,
+        contentEditable
     });
-}
+};

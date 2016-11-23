@@ -22,6 +22,7 @@ d.on('error', function (err) {
 
 var spyProxyPort;
 var showIframe = false;
+var contentEditable = false;
 
 var weinreDelegate = module.exports;
 var autoDetectBrowser = true;
@@ -33,13 +34,15 @@ weinreDelegate.run = function run({
     cusShowIframe,
     cusAutoDetectBrowser,
     cusExternalProxy,
-    cusCache
+    cusCache,
+    cusContentEditable
 }) {
     spyProxyPort = cusSpyProxyPort;
     showIframe = cusShowIframe;
     autoDetectBrowser = cusAutoDetectBrowser;
     externalProxy = cusExternalProxy;
     cache = cusCache;
+    contentEditable = cusContentEditable;
     let unBoundedPort;
     // get an unbounded port
     let tempServer  = new http.Server();
@@ -73,7 +76,12 @@ function startWeinreServer (port) {
                 if (err) {
                     return console.log(err);
                 }
-                var injectScriptTag = htmlUtil.createScriptTag(tpl, showIframe, config.SPY_WEINRE_DOMAIN);
+                var injectScriptTag = htmlUtil.createScriptTag({
+                    tpl,
+                    showIframe,
+                    contentEditable,
+                    weinreDomain: config.SPY_WEINRE_DOMAIN
+                });
                 spyProxy.createProxy({
                     port: spyProxyPort,
                     injectScriptTag: injectScriptTag,

@@ -12,6 +12,7 @@ program.version(require('../package.json').version)
 .option('-b, --autoDetectBrowser [value]', 'Auto detect Browser Request')
 .option('-e, --externalProxy [value]', 'set external Proxy')
 .option('-c, --cache [value]', 'set no cache')
+.option('-w, --contentEditable [value]', 'set content editable')
 
 program.parse(process.argv);
 
@@ -30,6 +31,11 @@ if (program.autoDetectBrowser === 'false') {
 var cusCache = false;
 if (program.cache === 'true') {
     cusCache = true;
+}
+
+var cusContentEditable = false;
+if (program.contentEditable === 'true') {
+    cusContentEditable = true;
 }
 
 weinreDelegate.createCA();
@@ -60,7 +66,8 @@ tempServerPromise.then(() => {
         cusSpyProxyPort,
         cusShowIframe,
         cusAutoDetectBrowser: autoDetectBrowser,
-        cusCache
+        cusCache,
+        cusContentEditable
     });
 }, (e) => {
     throw e;
