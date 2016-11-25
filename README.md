@@ -19,13 +19,22 @@ Language: [English](README_EN.md)
 6、可以配合其它代理工具一起使用(默认使用AnyProxy) [(设置外部代理)](#设置外部代理默认使用anyproxy)  
 
 
-Demo
+使用案例
 ------------
+#### 页面编辑模式
+>  
+启动命令：`spy-debugger -w true`  
+<img src="demo/img/spy-debugger-w.gif" width="350px" />
 #### 微信调试页面
+>  
 <img src="demo/img/demo.png" width="650px" />
 
 #### 抓包
+>  
 <img src="demo/img/AnyProxy.png" width="650px" />
+
+
+
 
 安装
 ------------
