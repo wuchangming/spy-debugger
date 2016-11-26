@@ -25,6 +25,7 @@ Language: [English](README_EN.md)
 >  
 启动命令：`spy-debugger -w true`  
 <img src="demo/img/spy-debugger-w.gif" width="350px" />
+
 #### 微信调试页面
 >  
 <img src="demo/img/demo.png" width="650px" />
