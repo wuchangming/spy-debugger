@@ -24,15 +24,15 @@ Language: [English](README_EN.md)
 #### 页面编辑模式
 >  
 启动命令：`spy-debugger -w true`  
-<img src="demo/img/spy-debugger-w.gif" width="350px" />
+<img src="demo/img/spy-debugger-w.gif" width="300px" />
 
 #### 微信调试页面
 >  
-<img src="demo/img/demo.png" width="650px" />
+<img src="demo/img/demo.png" width="600px" />
 
 #### 抓包
 >  
-<img src="demo/img/AnyProxy.png" width="650px" />
+<img src="demo/img/AnyProxy.png" width="600px" />
 
 
 
