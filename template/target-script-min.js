@@ -22,6 +22,12 @@
  * fixed console.log(null) or console.log(undefined) occur error bug!
  */
 
+/**
+ *  Dec 11 2016, wuchangming
+ *  add a global consoleforspydebugger to enhance `console` for prevent `log message` lost
+ *  before Document 'load' and 'DOMContentLoaded'.
+ */
+
 ;
 (function() {
     // modjewel.js
@@ -1626,6 +1632,8 @@
             return Console;
         })();
         RemoteConsole = new Console();
+        // make global
+        window.consoleforspydebugger = RemoteConsole;
         OriginalConsole = window.console || {};
         RemoteConsole.__original = OriginalConsole;
         OriginalConsole.__original = OriginalConsole;

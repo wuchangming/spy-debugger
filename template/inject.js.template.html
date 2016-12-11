@@ -1,7 +1,43 @@
 <script>
+try {
     var showIframe = <%= showIframe %>;
     if (window.top === window.self || showIframe) {
+
+        window.__spydebuggerPreLogList = [];
+        var funcs = ['log', 'error', 'debug', 'info', 'warn'];
+        for (var i = 0; i < funcs.length; i++) {
+            var _real = console[funcs[i]];
+            console[funcs[i]] = (function (m) {
+                return function functionName() {
+                    __spydebuggerPreLogList.push({
+                        m: m,
+                        arg: arguments
+                    })
+                    _real.apply(null, arguments);
+                }
+            })(funcs[i]);
+
+        }
+
         document.write('<script src="//<%= weinreDomain %>/target/target-script-min.js#anonymous"><\/script>');
+
+        var hasExec = false;
+        var executeConsole = function () {
+            if (hasExec) {
+                return;
+            }
+            hasExec = true;
+            setTimeout(function () {
+                for (var i = 0; i < __spydebuggerPreLogList.length; i++) {
+                    var o = __spydebuggerPreLogList[i];
+                    consoleforspydebugger[o.m].apply(consoleforspydebugger, o.arg);
+                }
+            }, 100);
+        }
+
+        document.addEventListener("DOMContentLoaded", executeConsole);
+        window.addEventListener("load", executeConsole);
+
         if (<%= contentEditable %>) {
             var callBack = function () {
                 document.body.style.webkitUserSelect="auto";
@@ -24,4 +60,8 @@
     } else {
         //do noting
     }
+} catch (e) {
+    console.error(e);
+}
+
 </script>
