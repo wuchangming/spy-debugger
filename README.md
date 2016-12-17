@@ -26,11 +26,11 @@ Language: [English](README_EN.md)
 启动命令：`spy-debugger -w true`  
 <img src="demo/img/spy-debugger-w.gif" width="300px" />
 
-#### 微信调试页面
+#### weiner页面调试界面
 >  
 <img src="demo/img/demo.png" width="600px" />
 
-#### 抓包
+#### anyproxy抓包界面
 >  
 <img src="demo/img/AnyProxy.png" width="600px" />
 
@@ -110,4 +110,8 @@ spy-debugger -c true
 
 更多
 ------------
-`spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
+- 修复`weinre`在`node.js` V7版本会崩溃的bug
+
+- 对`weinre`在页面`document ready`事件前，无法打印console.log日志进行了增强修复。
+
+- `spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
