@@ -13,6 +13,7 @@ const path = require('path');
 const domain = require('domain');
 const mitmproxy = require('node-mitmproxy');
 const _ = require('lodash');
+const ip = require('ip');
 
 
 var d = domain.create();
@@ -129,7 +130,7 @@ function startWeinreServer (port) {
                                 console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
                             }
                         }
-
+                        console.log(colors.green(`本机在当前网络下的IP地址为：${ip.address()}`))
                     }
                 });
             });
