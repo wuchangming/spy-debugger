@@ -43,7 +43,9 @@
     "lodash": "^4.6.1",
     "node-mitmproxy": "3.0.9",
     "through2": "^2.0.1",
-    "weinre": "2.0.0-pre-I0Z7U9OV"
+    "express":       "2.5.x",
+    "nopt":          "3.0.x",
+    "underscore":    "1.7.x"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
@@ -52,7 +54,8 @@
   },
   "files": [
     "lib",
-    "template"
+    "template",
+    "buildin_modules"
   ],
   "engines": {
     "node": ">= 4"

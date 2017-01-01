@@ -14,8 +14,6 @@ const jschardet = require('jschardet');
 const domain = require('domain');
 const childProcess = require('child_process');
 
-var targetScript = fs.readFileSync(path.resolve(__dirname, '../../template/target-script-min.js'));
-
 var d = domain.create();
 d.on('error', function (err) {
     console.log(err.message);
@@ -73,14 +71,6 @@ module.exports = {
                         return;
                     }
                     if (rOptions.headers.host === config.SPY_WEINRE_DOMAIN) {
-
-                        // fixed  console.log(null) or console.log(undefined) occur error bug!
-                        if (rPath === '/target/target-script-min.js') {
-                            res.setHeader('Content-Type', 'application/javascript');
-                            res.end(targetScript.toString());
-                            next();
-                            return;
-                        }
 
                         rOptions.protocol = 'http:';
                         rOptions.hostname = '127.0.0.1';

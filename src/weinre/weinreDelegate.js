@@ -2,7 +2,7 @@
 
 const http = require('http');
 const os = require('os');
-const weinre = require('weinre');
+const weinre = require('../../buildin_modules/weinre/lib/weinre');
 const child_process = require('child_process');
 const spyProxy = require('../proxy/spyProxy');
 const config = require('../config/config');
