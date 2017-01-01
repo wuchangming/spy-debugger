@@ -1,0 +1,2 @@
+weinre build 2.0.0-pre-IXE4AG4O by wuchangming
+git: 746a5817d014acdda673115e2ee458ec6c9b7673 fix(console): fixed chrome bug, add ArrowUp, ArrowDown, ArrowRight
