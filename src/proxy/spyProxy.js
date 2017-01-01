@@ -33,7 +33,15 @@ module.exports = {
         var createMitmProxy = () => {
 
             mitmProxy.createProxy({
-                externalProxy,
+                externalProxy: (req, ssl) => {
+                    // ignore weixin mmtls
+                    var headers = req.headers;
+                    if (headers['upgrade'] && headers['upgrade'] === 'mmtls') {
+                        return ''
+                    } else {
+                        return externalProxy
+                    }
+                },
                 port,
                 getCertSocketTimeout: 3 * 1000,
                 sslConnectInterceptor: (req, cltSocket, head) => {
