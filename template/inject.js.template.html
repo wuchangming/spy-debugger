@@ -30,6 +30,7 @@ try {
             setTimeout(function () {
                 for (var i = 0; i < __spydebuggerPreLogList.length; i++) {
                     var o = __spydebuggerPreLogList[i];
+                    var consoleforspydebugger = window.consoleforspydebugger;
                     consoleforspydebugger[o.m].apply(consoleforspydebugger, o.arg);
                 }
             }, 100);
