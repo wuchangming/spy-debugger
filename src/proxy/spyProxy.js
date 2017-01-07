@@ -160,7 +160,7 @@ module.exports = {
                     ports = externalProxyPorts
                     var externalProxyPort = externalProxyPorts.port;
                     var externalProxyWebPort = externalProxyPorts.webPort;
-                    externalProxy = 'http://localhost:' + externalProxyPort;
+                    externalProxy = 'http://127.0.0.1:' + externalProxyPort;
                     createMitmProxy();
                     successCB(externalProxyPorts);
                 });

@@ -25,7 +25,7 @@ let createAnyProxy = () => {
     var options = {
         type          : "http",
         port,
-        hostname      : "localhost",
+        hostname      : "127.0.0.1",
         rule          : Object.assign(default_rule, {
             shouldInterceptHttpsReq: () => true
         }),
