@@ -116,4 +116,6 @@ spy-debugger -c true
 
 - 对`weinre`在页面`document ready`事件前，无法打印console.log日志进行了增强修复。
 
+- 增强`weinre`打印未捕获异常(Uncaught Exceptions)功能。
+
 - `spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
