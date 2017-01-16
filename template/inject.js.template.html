@@ -1,4 +1,5 @@
 <script>
+// spy-debugger inject --- begin
 try {
     var showIframe = <%= showIframe %>;
     if (window.top === window.self || showIframe) {
@@ -61,8 +62,13 @@ try {
     } else {
         //do noting
     }
+
+    window.onerror = function (message, url, lineNo, columnNo, errorObj) {
+        console.error(message);
+    }
+
 } catch (e) {
     console.error(e);
 }
-
+// spy-debugger inject --- end
 </script>
