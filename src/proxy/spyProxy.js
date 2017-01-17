@@ -64,7 +64,7 @@ module.exports = {
                         rOptions.path = '/';
                     }
 
-                    if (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert'){
+                    if ((rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert') || rOptions.headers.host === config.SPY_DEBUGGER_SHORT_DOMAIN){
                         var userHome = process.env.HOME || process.env.USERPROFILE;
                         var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
                         try {
