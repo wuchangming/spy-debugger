@@ -1,6 +1,6 @@
 {
   "name": "spy-debugger",
-  "version": "3.6.1",
+  "version": "3.6.2",
   "description": "web page one-stop remote network debugger",
   "main": "lib/index.js",
   "scripts": {
@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/wuchangming/spy-debugger#readme",
   "dependencies": {
-    "anyproxy": "3.10.3",
+    "anyproxy": "3.10.4",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-polyfill": "^6.13.0",
     "charset": "^1.0.0",
