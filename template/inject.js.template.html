@@ -19,7 +19,11 @@
                             m: m,
                             arg: arguments
                         })
-                        _real.apply(null, arguments);
+                        try {
+                            _real.apply(window.console, arguments);
+                        } catch (e) {
+                            
+                        }
                     }
                 })(funcs[i]);
 
