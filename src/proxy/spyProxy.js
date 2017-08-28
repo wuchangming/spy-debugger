@@ -15,12 +15,11 @@ const domain = require('domain');
 const childProcess = require('child_process');
 
 var d = domain.create();
-d.on('error', function (err) {
+d.on('error', function(err) {
     console.log(err.message);
 });
 module.exports = {
-
-    createProxy ({
+    createProxy({
         injectScriptTag,
         port = 9888,
         weinrePort,
@@ -29,44 +28,52 @@ module.exports = {
         successCB,
         cache
     }) {
-
         var createMitmProxy = () => {
-
             mitmProxy.createProxy({
                 externalProxy: (req, ssl) => {
                     // ignore weixin mmtls
                     var headers = req.headers;
                     if (headers['upgrade'] && headers['upgrade'] === 'mmtls') {
-                        return ''
+                        return '';
                     } else {
-                        return externalProxy
+                        return externalProxy;
                     }
                 },
                 port,
                 getCertSocketTimeout: 3 * 1000,
                 sslConnectInterceptor: (req, cltSocket, head) => {
-
                     var srvUrl = url.parse(`https://${req.url}`);
 
                     // 只拦截浏览器的https请求
-                    if (!autoDetectBrowser || (req.headers && req.headers['user-agent'] && /Mozilla/.test(req.headers['user-agent']))) {
-                        return true
+                    if (
+                        !autoDetectBrowser ||
+                        (req.headers &&
+                            req.headers['user-agent'] &&
+                            /Mozilla/.test(req.headers['user-agent']))
+                    ) {
+                        return true;
                     } else {
-                        return false
+                        return false;
                     }
                 },
                 requestInterceptor: (rOptions, req, res, ssl, next) => {
-
                     var rPath;
                     if (rOptions.path) {
-                        rPath = (url.parse(rOptions.path)).path;
+                        rPath = url.parse(rOptions.path).path;
                     } else {
                         rOptions.path = '/';
                     }
 
-                    if ((rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN && rPath === '/cert') || rOptions.headers.host === config.SPY_DEBUGGER_SHORT_DOMAIN){
+                    if (
+                        (rOptions.headers.host === config.SPY_DEBUGGER_DOMAIN &&
+                            rPath === '/cert') ||
+                        rOptions.headers.host === config.SPY_DEBUGGER_SHORT_DOMAIN
+                    ) {
                         var userHome = process.env.HOME || process.env.USERPROFILE;
-                        var certPath = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt');
+                        var certPath = path.resolve(
+                            userHome,
+                            './node-mitmproxy/node-mitmproxy.ca.crt'
+                        );
                         try {
                             var fileString = fs.readFileSync(certPath);
                             res.setHeader('Content-Type', 'application/x-x509-ca-cert');
@@ -79,7 +86,6 @@ module.exports = {
                         return;
                     }
                     if (rOptions.headers.host === config.SPY_WEINRE_DOMAIN) {
-
                         rOptions.protocol = 'http:';
                         rOptions.hostname = '127.0.0.1';
                         rOptions.port = weinrePort;
@@ -107,20 +113,21 @@ module.exports = {
                     if (!isHtml || contentLengthIsZero) {
                         next();
                     } else {
-
                         Object.keys(proxyRes.headers).forEach(function(key) {
-                            if(proxyRes.headers[key] != undefined){
-                                var newkey = key.replace(/^[a-z]|-[a-z]/g, (match) => {
-                                    return match.toUpperCase()
+                            if (proxyRes.headers[key] != undefined) {
+                                var newkey = key.replace(/^[a-z]|-[a-z]/g, match => {
+                                    return match.toUpperCase();
                                 });
                                 var newkey = key;
 
-                                if (isHtml && (key === 'content-length' || key === 'content-security-policy')) {
+                                if (
+                                    isHtml &&
+                                    (key === 'content-length' || key === 'content-security-policy')
+                                ) {
                                     // do nothing
                                 } else {
                                     res.setHeader(newkey, proxyRes.headers[key]);
                                 }
-
                             }
                         });
 
@@ -129,35 +136,54 @@ module.exports = {
                         var isGzip = httpUtil.isGzip(proxyRes);
 
                         if (isGzip) {
-                            proxyRes.pipe(new zlib.Gunzip())
-                            .pipe(through(function (chunk, enc, callback) {
-                                chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
-                            }))
-                            .pipe(new zlib.Gzip()).pipe(res);
+                            proxyRes
+                                .pipe(new zlib.Gunzip())
+                                .pipe(
+                                    through(function(chunk, enc, callback) {
+                                        chunkReplace(
+                                            this,
+                                            chunk,
+                                            enc,
+                                            callback,
+                                            injectScriptTag,
+                                            proxyRes
+                                        );
+                                    })
+                                )
+                                .pipe(new zlib.Gzip())
+                                .pipe(res);
                         } else {
                             proxyRes
-                            .pipe(through(function (chunk, enc, callback) {
-                                chunkReplace(this, chunk, enc, callback, injectScriptTag, proxyRes);
-                            }))
-                            .pipe(res);
+                                .pipe(
+                                    through(function(chunk, enc, callback) {
+                                        chunkReplace(
+                                            this,
+                                            chunk,
+                                            enc,
+                                            callback,
+                                            injectScriptTag,
+                                            proxyRes
+                                        );
+                                    })
+                                )
+                                .pipe(res);
                         }
                     }
                     next();
                 }
             });
-        }
+        };
 
         if (!externalProxy) {
             d.run(() => {
+                let ports;
 
-                let ports
-
-                var childProxy = childProcess.fork(`${__dirname}/externalChildProcess`)
+                var childProxy = childProcess.fork(`${__dirname}/externalChildProcess`);
                 childProxy.send({
                     type: 'start'
                 });
-                childProxy.on('message', (externalProxyPorts) => {
-                    ports = externalProxyPorts
+                childProxy.on('message', externalProxyPorts => {
+                    ports = externalProxyPorts;
                     var externalProxyPort = externalProxyPorts.port;
                     var externalProxyWebPort = externalProxyPorts.webPort;
                     externalProxy = 'http://127.0.0.1:' + externalProxyPort;
@@ -166,36 +192,41 @@ module.exports = {
                 });
                 let restartFun = () => {
                     console.log(colors.yellow(`anyproxy异常退出，尝试重启`));
-                    let childProxy = childProcess.fork(`${__dirname}/externalChildProcess`)
+                    let childProxy = childProcess.fork(`${__dirname}/externalChildProcess`);
                     childProxy.send({
                         type: 'restart',
                         ports
                     });
-                    childProxy.on('exit', function (e) {
-                        restartFun()
-                    })
-                }
-                childProxy.on('exit', function (e) {
-                    restartFun()
-                })
-            })
+                    childProxy.on('exit', function(e) {
+                        restartFun();
+                    });
+                };
+                childProxy.on('exit', function(e) {
+                    restartFun();
+                });
+            });
         } else {
             createMitmProxy();
             successCB(null);
         }
-
     }
-}
-function chunkReplace (_this, chunk, enc, callback, injectScriptTag, proxyRes) {
+};
+function chunkReplace(_this, chunk, enc, callback, injectScriptTag, proxyRes) {
     var _charset;
     try {
-        _charset = charset(proxyRes, chunk) || jschardet.detect(chunk).encoding.toLowerCase();
+        _charset = jschardet.detect(chunk).encoding.toLowerCase() || charset(proxyRes, chunk);
     } catch (e) {
         console.error(e);
     }
     var chunkString;
     if (_charset != null && _charset != 'utf-8') {
-        chunkString = iconv.decode(chunk, _charset);
+        try {
+            chunkString = iconv.decode(chunk, _charset);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            chunkString = iconv.decode(chunk, 'utf-8');
+        }
     } else {
         chunkString = chunk.toString();
     }
@@ -204,7 +235,13 @@ function chunkReplace (_this, chunk, enc, callback, injectScriptTag, proxyRes) {
 
     var buffer;
     if (_charset != null && _charset != 'utf-8') {
-        buffer = iconv.encode(newChunkString, _charset);
+        try {
+            buffer = iconv.encode(newChunkString, _charset);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            buffer = iconv.encode(newChunkString, 'utf-8');
+        }
     } else {
         buffer = new Buffer(newChunkString);
     }
