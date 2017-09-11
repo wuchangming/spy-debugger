@@ -135,39 +135,14 @@ module.exports = {
 
                         var isGzip = httpUtil.isGzip(proxyRes);
 
-                        if (isGzip) {
-                            proxyRes
-                                .pipe(new zlib.Gunzip())
-                                .pipe(
-                                    through(function(chunk, enc, callback) {
-                                        chunkReplace(
-                                            this,
-                                            chunk,
-                                            enc,
-                                            callback,
-                                            injectScriptTag,
-                                            proxyRes
-                                        );
-                                    })
-                                )
-                                .pipe(new zlib.Gzip())
-                                .pipe(res);
-                        } else {
-                            proxyRes
-                                .pipe(
-                                    through(function(chunk, enc, callback) {
-                                        chunkReplace(
-                                            this,
-                                            chunk,
-                                            enc,
-                                            callback,
-                                            injectScriptTag,
-                                            proxyRes
-                                        );
-                                    })
-                                )
-                                .pipe(res);
-                        }
+                        var chunks = []
+                        proxyRes.on('data', function (chunk) {
+                            chunks.push(chunk)
+                        }).on('end', function () {
+                            var allChunk = Buffer.concat(chunks);
+
+                            res.end(chunkReplace(allChunk, injectScriptTag, proxyRes))
+                        })
                     }
                     next();
                 }
@@ -211,10 +186,10 @@ module.exports = {
         }
     }
 };
-function chunkReplace(_this, chunk, enc, callback, injectScriptTag, proxyRes) {
+function chunkReplace(chunk, injectScriptTag, proxyRes) {
     var _charset;
     try {
-        _charset = jschardet.detect(chunk).encoding.toLowerCase() || charset(proxyRes, chunk);
+        _charset =  charset(proxyRes, chunk) || jschardet.detect(chunk).encoding.toLowerCase();
     } catch (e) {
         console.error(e);
     }
@@ -224,7 +199,6 @@ function chunkReplace(_this, chunk, enc, callback, injectScriptTag, proxyRes) {
             chunkString = iconv.decode(chunk, _charset);
         } catch (e) {
             console.error(e);
-        } finally {
             chunkString = iconv.decode(chunk, 'utf-8');
         }
     } else {
@@ -239,13 +213,11 @@ function chunkReplace(_this, chunk, enc, callback, injectScriptTag, proxyRes) {
             buffer = iconv.encode(newChunkString, _charset);
         } catch (e) {
             console.error(e);
-        } finally {
             buffer = iconv.encode(newChunkString, 'utf-8');
         }
     } else {
         buffer = new Buffer(newChunkString);
     }
 
-    _this.push(buffer);
-    callback();
+    return buffer;
 }
