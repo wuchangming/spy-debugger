@@ -127,7 +127,7 @@ startServer = function() {
     maxObjects: 500,
     maxLength: 32 * 1024 * 1024
   };
-  app = express.createServer();
+  app = express();
   app.on('error', function(error) {
     return utils.exit("error running server: " + error);
   });
@@ -158,7 +158,7 @@ startServer = function() {
   app.use(express.errorHandler({
     dumpExceptions: true
   }));
-  app.use(express.staticCache(staticCacheOptions));
+  // app.use(express.staticCache(staticCacheOptions));
   app.use(express["static"](options.staticWebDir));
   if (options.boundHost === '-all-') {
     return app.listen(options.httpPort);

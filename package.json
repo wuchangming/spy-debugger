@@ -37,15 +37,15 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "debug": "^2.2.0",
+    "express": "^3.21.2",
     "iconv-lite": "^0.4.13",
     "ip": "^1.1.2",
     "jschardet": "^1.4.1",
     "lodash": "^4.6.1",
     "node-mitmproxy": "3.1.0",
+    "nopt": "3.0.x",
     "through2": "^2.0.1",
-    "express":       "2.5.x",
-    "nopt":          "3.0.x",
-    "underscore":    "1.7.x"
+    "underscore": "1.7.x"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
