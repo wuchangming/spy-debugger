@@ -1,6 +1,6 @@
 About spy-debugger
 ==========
-Spy-debugger is one-stop pages inspection and debugger proxy. Spy-debugger can inspect and debugger all the mobile end browers and webview HTML page within the request of HTTP and HTTPS, such as Wechat, Facebook, HybirdApp and so on.  
+Spy-debugger is one-stop pages inspection and debugger proxy. Spy-debugger can inspect and debugger all the mobile end browers and webview HTML page within the request of HTTP and HTTPS, such as Wechat, Facebook, HybridApp and so on.  
 
 [![npm](https://img.shields.io/npm/v/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![npm](https://img.shields.io/npm/dt/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
