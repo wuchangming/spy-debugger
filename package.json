@@ -1,14 +1,13 @@
 {
   "name": "spy-debugger",
-  "version": "3.6.8",
+  "version": "3.7.0",
   "description": "web page one-stop remote network debugger",
   "main": "lib/index.js",
   "scripts": {
     "test": "mocha -R landing test/index",
     "build": "babel -w src -d lib",
     "dev": "node-debug dev/testSpyProxy.js",
-    "prepublish": "babel src -d lib",
-    "postinstall": "node lib/scripts/postinstall.js"
+    "prepublish": "babel src -d lib"
   },
   "bin": {
     "spy-debugger": "lib/index.js"
@@ -30,7 +29,7 @@
   },
   "homepage": "https://github.com/wuchangming/spy-debugger#readme",
   "dependencies": {
-    "anyproxy": "3.10.4",
+    "anyproxy": "4.0.10",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-polyfill": "^6.13.0",
     "charset": "^1.0.0",
