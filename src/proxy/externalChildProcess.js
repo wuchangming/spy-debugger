@@ -1,6 +1,6 @@
 require('babel-polyfill')
 const http = require('http')
-const AnyProxy = require('AnyProxy')
+const AnyProxy = require('anyproxy')
 const fs = require('fs')
 const path = require('path')
 const colors = require('colors')
