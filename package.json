@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/wuchangming/spy-debugger#readme",
   "dependencies": {
-    "anyproxy": "4.0.12",
+    "anyproxy": "4.0.10",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-polyfill": "^6.13.0",
     "charset": "^1.0.0",
