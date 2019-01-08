@@ -77,6 +77,7 @@ module.exports = {
                         try {
                             var fileString = fs.readFileSync(certPath);
                             res.setHeader('Content-Type', 'application/x-x509-ca-cert');
+                            res.setHeader("Content-Disposition","attachment;filename=node-mitmproxy.ca.crt");
                             res.end(fileString.toString());
                         } catch (e) {
                             console.log(e);
