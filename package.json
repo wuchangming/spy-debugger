@@ -57,6 +57,6 @@
     "buildin_modules"
   ],
   "engines": {
-    "node": ">= 4"
+    "node": ">= 6"
   }
 }
