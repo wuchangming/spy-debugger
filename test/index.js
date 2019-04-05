@@ -1,6 +1,6 @@
-var weinreDelegateLib = require('../lib/weinre/weinreDelegate');
+const child_process = require('child_process')
 describe("spy-debugger", function() {
     it('`lib` should be ok', function () {
-        weinreDelegateLib.run({});
+        child_process.exec('node ./lib/index.js')
     })
 })
