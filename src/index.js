@@ -1,74 +1,76 @@
 #!/usr/bin/env node
 'use strict'
-const program = require('commander');
-const weinreDelegate = require('./weinre/weinreDelegate');
-const colors = require('colors');
-const http = require('http');
+const program = require('commander')
+const weinreDelegate = require('./weinre/weinreDelegate')
+const colors = require('colors')
+const http = require('http')
 
+program
+    .version(require('../package.json').version)
+    .option('-p, --port [value]', 'start port')
+    .option('-i, --showIframe [value]', 'spy iframe window')
+    .option('-b, --autoDetectBrowser [value]', 'Auto detect Browser Request')
+    .option('-e, --externalProxy [value]', 'set external Proxy')
+    .option('-c, --cache [value]', 'set no cache')
+    .option('-w, --contentEditable [value]', 'set content editable')
 
-program.version(require('../package.json').version)
-.option('-p, --port [value]', 'start port')
-.option('-i, --showIframe [value]', 'spy iframe window')
-.option('-b, --autoDetectBrowser [value]', 'Auto detect Browser Request')
-.option('-e, --externalProxy [value]', 'set external Proxy')
-.option('-c, --cache [value]', 'set no cache')
-.option('-w, --contentEditable [value]', 'set content editable')
+program.parse(process.argv)
 
-program.parse(process.argv);
+var cusSpyProxyPort = program.port || 9888
 
-var cusSpyProxyPort = program.port || 9888;
-
-var cusShowIframe = false;
+var cusShowIframe = false
 if (program.showIframe === 'true') {
-    cusShowIframe = true;
+    cusShowIframe = true
 }
 
-var autoDetectBrowser = true;
+var autoDetectBrowser = true
 if (program.autoDetectBrowser === 'false') {
-    autoDetectBrowser = false;
+    autoDetectBrowser = false
 }
 
-var cusCache = false;
+var cusCache = false
 if (program.cache === 'true') {
-    cusCache = true;
+    cusCache = true
 }
 
-var cusContentEditable = false;
+var cusContentEditable = false
 if (program.contentEditable === 'true') {
-    cusContentEditable = true;
+    cusContentEditable = true
 }
 
-weinreDelegate.createCA();
+weinreDelegate.createCA()
 
-let tempServer = new http.Server();
+let tempServer = new http.Server()
 
-var createTempServerPromise = (port) => {
+var createTempServerPromise = port => {
     return new Promise((resolve, reject) => {
         tempServer.listen(port, () => {
             tempServer.close(() => {
-                resolve();
+                resolve()
             })
-        });
-        tempServer.on('error', (e) => {
-            console.error(colors.red('警告：启动失败', e));
-            console.error(colors.red('检查端口' + port + '是否被占用'));
-            reject(e)
         })
-
-    });
+        tempServer.on('error', e => {
+            console.error(colors.red('警告：启动失败!！'))
+            console.error(colors.red('检查端口 ' + port + ' 是否被占用，或尝试更换启动端口'))
+            reject()
+        })
+    })
 }
 
-var tempServerPromise= createTempServerPromise(cusSpyProxyPort)
+var tempServerPromise = createTempServerPromise(cusSpyProxyPort)
 
-tempServerPromise.then(() => {
-    weinreDelegate.run({
-        cusExternalProxy: program.externalProxy,
-        cusSpyProxyPort,
-        cusShowIframe,
-        cusAutoDetectBrowser: autoDetectBrowser,
-        cusCache,
-        cusContentEditable
-    });
-}, (e) => {
-    throw e;
-})
+tempServerPromise.then(
+    () => {
+        weinreDelegate.run({
+            cusExternalProxy: program.externalProxy,
+            cusSpyProxyPort,
+            cusShowIframe,
+            cusAutoDetectBrowser: autoDetectBrowser,
+            cusCache,
+            cusContentEditable
+        })
+    },
+    e => {
+        // throw e
+    }
+)
