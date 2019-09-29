@@ -2619,9 +2619,9 @@ node-forge@^0.6.39, node-forge@^0.6.42:
   version "0.6.49"
   resolved "https://registry.yarnpkg.com/node-forge/-/node-forge-0.6.49.tgz#f1ee95d5d74623938fe19d698aa5a26d54d2f60f"
 
-node-mitmproxy@3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/node-mitmproxy/-/node-mitmproxy-3.1.0.tgz#7b07d00d2f894098d913923fcfedeb775c50b938"
+node-mitmproxy@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/node-mitmproxy/-/node-mitmproxy-3.1.1.tgz#6338a602e542e6fe04851720533e5f3922f58a8e"
   dependencies:
     agentkeepalive "^2.1.1"
     babel-core "^6.8.0"
