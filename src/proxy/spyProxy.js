@@ -49,7 +49,8 @@ module.exports = {
                         !autoDetectBrowser ||
                         (req.headers &&
                             req.headers['user-agent'] &&
-                            /Mozilla/.test(req.headers['user-agent']))
+                            (/Mozilla/.test(req.headers['user-agent']) ||
+                                /com.apple.WebKit.Networking/i.test(req.headers['user-agent'])))
                     ) {
                         return true;
                     } else {
