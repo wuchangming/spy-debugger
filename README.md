@@ -2,7 +2,7 @@
 ==========
 一站式页面调试、抓包工具。远程调试任何手机浏览器页面，任何手机移动端webview（如：微信，HybridApp等）。支持HTTP/HTTPS，无需USB连接设备。  
 
-[![npm](https://img.shields.io/npm/v/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
+[![Financial Contributors on Open Collective](https://opencollective.com/spy-debugger/all/badge.svg?label=financial+contributors)](https://opencollective.com/spy-debugger) [![npm](https://img.shields.io/npm/v/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![npm](https://img.shields.io/npm/dt/spy-debugger.svg)](https://www.npmjs.com/package/spy-debugger)
 [![Build Status](https://travis-ci.org/wuchangming/spy-debugger.svg?branch=master)](https://travis-ci.org/wuchangming/spy-debugger)  
 
@@ -119,3 +119,33 @@ spy-debugger -c true
 - 增强`weinre`打印未捕获异常(Uncaught Exceptions)功能。
 
 - `spy-debugger`原理是集成了`weinre`，简化了`weinre`需要给每个调试的页面添加js代码。`spy-debugger`原理是拦截所有html页面请求注入`weinre`所需要的js代码。让页面调试更加方便。
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/wuchangming/spy-debugger/graphs/contributors"><img src="https://opencollective.com/spy-debugger/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/spy-debugger/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/spy-debugger"><img src="https://opencollective.com/spy-debugger/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/spy-debugger/contribute)]
+
+<a href="https://opencollective.com/spy-debugger/organization/0/website"><img src="https://opencollective.com/spy-debugger/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/1/website"><img src="https://opencollective.com/spy-debugger/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/2/website"><img src="https://opencollective.com/spy-debugger/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/3/website"><img src="https://opencollective.com/spy-debugger/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/4/website"><img src="https://opencollective.com/spy-debugger/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/5/website"><img src="https://opencollective.com/spy-debugger/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/6/website"><img src="https://opencollective.com/spy-debugger/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/7/website"><img src="https://opencollective.com/spy-debugger/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/8/website"><img src="https://opencollective.com/spy-debugger/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/spy-debugger/organization/9/website"><img src="https://opencollective.com/spy-debugger/organization/9/avatar.svg"></a>
