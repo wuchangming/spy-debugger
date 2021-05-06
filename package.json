@@ -44,7 +44,7 @@
     "node-mitmproxy": "3.1.1",
     "nopt": "3.0.x",
     "through2": "^2.0.5",
-    "underscore": "1.7.x"
+    "underscore": "1.12.x"
   },
   "devDependencies": {
     "babel-cli": "^6.6.5",
