@@ -15,7 +15,7 @@ Language: [English](README_EN.md)
 2、[操作简单](#三分钟上手)，无需USB连接设备   
 3、**支持HTTPS**。  
 4、`spy-debugger`内部集成了[`weinre`](http://people.apache.org/~pmuellr/weinre/docs/latest/)、[`node-mitmproxy`](https://github.com/wuchangming/node-mitmproxy)、[`AnyProxy`](https://github.com/alibaba/anyproxy)。  
-5、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不造成任何影响。  
+5、自动忽略原生App发起的https请求，只拦截webview发起的https请求。对使用了SSL pinning技术的原生App不造成任何影响。【PS：由于 `iOS 15` 调整代理协议，`iOS 15` 已无法检测请求是否浏览器发起】  
 6、可以配合其它代理工具一起使用(默认使用AnyProxy) [(设置外部代理)](#设置外部代理默认使用anyproxy)  
 
 
@@ -95,11 +95,11 @@ spy-debugger -w true
 spy-debugger -i true
 ```
 
-#### 是否只拦截浏览器发起的https请求
+#### 是否只拦截浏览器发起的https请求 【PS：由于 `iOS 15` 调整代理协议，已无法检测请求是否浏览器发起】
 >  
-(默认： true)
+(默认： false)
 ```
-spy-debugger -b false
+spy-debugger -b true
 ```
 有些浏览器发出的connect请求没有正确的携带userAgent，这个判断有时候会出错，如**UC浏览器**。这个时候需要设置为false。大多数情况建议启用默认配置：true，由于目前大量App应用自身（非WebView）发出的请求会使用到SSL pinning技术，自定义的证书将不能通过app的证书校验。
 

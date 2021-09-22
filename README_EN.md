@@ -70,10 +70,10 @@ spy-debugger supply AnyProxy as default proxy, but you can only set up the exter
 spy-debugger -i true
 ```
 
-#### whether intercept the HTTPS requests from the brower.
-(default: true)
+#### whether intercept the HTTPS requests from the brower.【not working in iOS 15】
+(default: false)
 ```
-spy-debugger -b false
+spy-debugger -b true
 ```
 There are some browers that send the connect request with incorrected userAgent. Sometimes this would cause error. such as **UC brower**. In this case, `spy-debugger -b false` can fix this error. In most cases we suggest using the default value `true`. Now there are many native Apps send request with SSL pinning. Manual certification will not pass native app certification.
 
