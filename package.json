@@ -36,7 +36,7 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "debug": "^2.2.0",
-    "express": "^3.21.2",
+    "express": "^4.17.3",
     "iconv-lite": "^0.4.13",
     "ip": "^1.1.2",
     "jschardet": "^1.4.1",
