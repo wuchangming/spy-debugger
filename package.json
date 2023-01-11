@@ -35,7 +35,7 @@
     "charset": "^1.0.0",
     "colors": "^1.1.2",
     "commander": "^2.9.0",
-    "debug": "^2.2.0",
+    "debug": "^3.1.0",
     "express": "^3.21.2",
     "iconv-lite": "^0.4.13",
     "ip": "^1.1.2",
