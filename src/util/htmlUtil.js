@@ -1,6 +1,6 @@
 const _ = require('lodash');
 
-var htmlUtil = exports;
+const htmlUtil = exports;
 
 
 // inject script into html

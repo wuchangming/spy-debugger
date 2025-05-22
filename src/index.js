@@ -2,8 +2,9 @@
 'use strict'
 const program = require('commander')
 const weinreDelegate = require('./weinre/weinreDelegate')
-const colors = require('colors')
+// const colors = require('colors'); // Replaced by logger
 const http = require('http')
+const logger = require('./util/logger'); // Import logger
 
 program
     .version(require('../package.json').version)
@@ -16,51 +17,50 @@ program
 
 program.parse(process.argv)
 
-var cusSpyProxyPort = program.port || 9888
+const cusSpyProxyPort = program.port || 9888
 
-var cusShowIframe = false
+let cusShowIframe = false
 if (program.showIframe === 'true') {
     cusShowIframe = true
 }
 
-var autoDetectBrowser = false
+let autoDetectBrowser = false
 if (program.autoDetectBrowser === 'true') {
     autoDetectBrowser = true
 }
 
-var cusCache = false
+let cusCache = false
 if (program.cache === 'true') {
     cusCache = true
 }
 
-var cusContentEditable = false
+let cusContentEditable = false
 if (program.contentEditable === 'true') {
     cusContentEditable = true
 }
 
-weinreDelegate.createCA()
+async function main() {
+    try {
+        weinreDelegate.createCA()
 
-let tempServer = new http.Server()
+        let tempServer = new http.Server()
 
-var createTempServerPromise = port => {
-    return new Promise((resolve, reject) => {
-        tempServer.listen(port, () => {
-            tempServer.close(() => {
-                resolve()
+        const createTempServerPromise = port => {
+            return new Promise((resolve, reject) => {
+                tempServer.listen(port, () => {
+                    tempServer.close(() => {
+                        resolve()
+                    })
+                })
+                tempServer.on('error', e => {
+                    logger.error(`警告：启动失败!！检查端口 ${port} 是否被占用，或尝试更换启动端口`, e);
+                    reject(e) // Pass error to reject
+                })
             })
-        })
-        tempServer.on('error', e => {
-            console.error(colors.red('警告：启动失败!！'))
-            console.error(colors.red('检查端口 ' + port + ' 是否被占用，或尝试更换启动端口'))
-            reject()
-        })
-    })
-}
+        }
 
-var tempServerPromise = createTempServerPromise(cusSpyProxyPort)
+        await createTempServerPromise(cusSpyProxyPort)
 
-tempServerPromise.then(
-    () => {
         weinreDelegate.run({
             cusExternalProxy: program.externalProxy,
             cusSpyProxyPort,
@@ -69,8 +69,11 @@ tempServerPromise.then(
             cusCache,
             cusContentEditable
         })
-    },
-    e => {
-        // throw e
+    } catch (e) {
+        // Errors from createTempServerPromise are logged there.
+        // If weinreDelegate.run() itself could throw and needs logging here, add:
+        // logger.error('An error occurred during main execution:', e);
     }
-)
+}
+
+main();

@@ -1,26 +1,16 @@
-require('babel-polyfill')
 const http = require('http')
 const AnyProxy = require('anyproxy')
 const fs = require('fs')
 const path = require('path')
 const colors = require('colors')
+const { findFreePort } = require('../util/portUtil'); // Import the utility
 
 let port, webPort, socketPort
 
-var tempServerPromise = () => {
-    return new Promise((resolve, reject) => {
-        let tempServer = new http.Server()
-        tempServer.listen(() => {
-            let unBoundedPort = tempServer.address().port
-            tempServer.close(() => {
-                resolve(unBoundedPort)
-            })
-        })
-    })
-}
+// Removed tempServerPromise function
 
 let createAnyProxy = () => {
-    var options = {
+    const options = {
         port,
         forceProxyHttps: true,
         webInterface: {
@@ -36,8 +26,8 @@ let createAnyProxy = () => {
 process.on('message', ({ type, ports }) => {
     if (type === 'start') {
         if (!AnyProxy.utils.certMgr.isRootCAFileExists()) {
-            var userHome = process.env.HOME || process.env.USERPROFILE
-            var certDir = path.join(userHome, '/.anyproxy/certificates')
+            const userHome = process.env.HOME || process.env.USERPROFILE
+            const certDir = path.join(userHome, '/.anyproxy/certificates')
             if (!fs.existsSync(certDir)) {
                 try {
                     fs.mkdirSync(certDir)
@@ -45,8 +35,8 @@ process.on('message', ({ type, ports }) => {
                     console.error('fail to create certDir at:' + certDir)
                 }
             }
-            var mitmCrt = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt')
-            var mitmKey = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.key.pem')
+            const mitmCrt = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.crt')
+            const mitmKey = path.resolve(userHome, './node-mitmproxy/node-mitmproxy.ca.key.pem')
 
             fs
                 .createReadStream(mitmCrt)
@@ -57,24 +47,32 @@ process.on('message', ({ type, ports }) => {
         }
 
         ;(async () => {
-            let ports = await Promise.all([
-                tempServerPromise(),
-                tempServerPromise(),
-                tempServerPromise()
-            ])
-            port = ports[0]
-            webPort = ports[1]
-            socketPort = ports[2]
-            createAnyProxy()
+            try {
+                let resolvedPorts = await Promise.all([
+                    findFreePort(),
+                    findFreePort(),
+                    findFreePort()
+                ]);
+                port = resolvedPorts[0];
+                webPort = resolvedPorts[1];
+                socketPort = resolvedPorts[2];
+                createAnyProxy();
 
-            process.send({
-                port,
-                webPort,
-                socketPort
-            })
+                process.send({
+                    port,
+                    webPort,
+                    socketPort
+                });
+            } catch (error) {
+                console.error(colors.red('Failed to find free ports for AnyProxy:'), error);
+                // Consider sending an error message back to the parent process or exiting
+                process.exit(1); // Exit if we can't get ports
+            }
         })()
     } else if (type === 'restart') {
         port = ports.port
+            webPort = ports.webPort; // This was part of the original code, ensure it's correctly scoped if needed later.
+            socketPort = ports.socketPort;  // This was part of the original code.
         webPort = ports.webPort
         socketPort = ports.socketPort
 

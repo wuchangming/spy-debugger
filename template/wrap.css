@@ -1,0 +1,75 @@
+html,body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overscroll-behavior: none;
+}
+.container {
+    height: 100%;
+    width: 100%;
+}
+.control-bar {
+    padding-left: 3px;
+    height: 99%;
+    width: 3%;
+    display: inline-block;
+}
+.monitor {
+    display: inline-block;
+    height: 100%;
+    width: 95%;
+}
+.weinre-iframe, .anyproxy-iframe{
+    height: 99%;
+    width: 100%;
+}
+
+.control-bar-wrap{
+    height: 100%;
+    display: table;
+}
+.control-bar-container {
+    display: table-cell;
+    vertical-align: middle;
+    border-right: #bbb4b4 2px solid;
+}
+.control-bar-btn {
+    text-align: center;
+    margin: 8px 4px;
+    padding: 20px 4px;
+    cursor: pointer;
+    border: #42b983 2px solid;
+    transition: background-color 0.5s, color 0.5s;
+    -moz-transition: background-color 0.5s, color 0.5s; /* Firefox 4 */
+    -webkit-transition: background-color 0.5s, color 0.5s; /* Safari 和 Chrome */
+    -o-transition: background-color 0.5s, color 0.5s;
+}
+.control-bar-btn.off:hover {
+    color: #ffffff;
+    background-color: #42b983;
+    border-radius: 5px;
+
+}
+.control-bar-btn.on {
+    color: #ffffff;
+    background-color: #42b983;
+    border-radius: 5px;
+}
+.control-bar-btn.off {
+    color: #42b983;
+    background-color: #ffffff;
+    border-radius: 5px;
+}
+.github-logo {
+    margin: auto;
+    width: 28px;
+}
+svg:hover {
+    fill: #111;
+}
+.options-btn {
+    margin: auto;
+    width: 28px;
+    top:10px;
+}
