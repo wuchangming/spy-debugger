@@ -1,7 +1,7 @@
-'use strict'
+'use strict';
 
 const http = require('http');
-const os = require('os');
+// const os = require('os'); // TODO: May be needed for system operations
 const weinre = require('../../buildin_modules/weinre/lib/weinre');
 const child_process = require('child_process');
 const spyProxy = require('../proxy/spyProxy');
@@ -53,11 +53,11 @@ weinreDelegate.run = function run({
             startWeinreServer(unBoundedPort);
         });
     });
-}
+};
 
 weinreDelegate.createCA = function () {
     mitmproxy.createCA();
-}
+};
 
 function startWeinreServer (port) {
     console.log(colors.green('正在启动代理'));
@@ -104,11 +104,11 @@ function startWeinreServer (port) {
                                         child_process.exec(`open http://127.0.0.1:${guiPort}`);
                                         console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${guiPort}`));
                                     }
-                                }, 600)
+                                }, 600);
                             });
                             guiServer.on('error', (e) => {
                                 console.log(e);
-                            })
+                            });
                             var fp = path.join(__dirname, '../../template/wrap.html');
                             var fileTemp = (fs.readFileSync(fp)).toString();
                             var fileString = _.template(fileTemp)({
@@ -118,7 +118,7 @@ function startWeinreServer (port) {
                             guiServer.on('request', (req, res) => {
                                 res.setHeader('Content-Type', 'text/html;charset=utf-8');
                                 res.end(fileString);
-                            })
+                            });
 
                         } else {
                             // auto open debugger page
@@ -130,14 +130,14 @@ function startWeinreServer (port) {
                                 console.log(colors.green(`浏览器打开 ---> http://127.0.0.1:${port}/client`));
                             }
                         }
-                        console.log(colors.green(`本机在当前网络下的IP地址为：${ip.address()}`))
+                        console.log(colors.green(`本机在当前网络下的IP地址为：${ip.address()}`));
                     }
                 });
             });
             weinreServer.on('error', (e) => {
                 console.error(e);
-            })
-        })
+            });
+        });
 
-    })
+    });
 }

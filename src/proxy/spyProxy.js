@@ -1,8 +1,8 @@
 const url = require('url');
 const mitmProxy = require('node-mitmproxy');
 const httpUtil = require('../util/httpUtil');
-const zlib = require('zlib');
-const through = require('through2');
+// const zlib = require('zlib'); // TODO: Used for compression handling
+// const through = require('through2'); // TODO: Used for stream processing
 const config = require('../config/config');
 const htmlUtil = require('../util/htmlUtil');
 const path = require('path');
@@ -30,7 +30,7 @@ module.exports = {
     }) {
         var createMitmProxy = () => {
             mitmProxy.createProxy({
-                externalProxy: (req, ssl) => {
+                externalProxy: (req, _ssl) => {
                     // ignore weixin mmtls
                     var headers = req.headers;
                     if (headers['upgrade'] && headers['upgrade'] === 'mmtls') {
@@ -41,8 +41,8 @@ module.exports = {
                 },
                 port,
                 getCertSocketTimeout: 3 * 1000,
-                sslConnectInterceptor: (req, cltSocket, head) => {
-                    var srvUrl = url.parse(`https://${req.url}`);
+                sslConnectInterceptor: (req, _cltSocket, _head) => {
+                    // var srvUrl = url.parse(`https://${req.url}`); // TODO: May be needed for URL processing
 
                     // 只拦截浏览器的https请求
                     if (
@@ -78,7 +78,7 @@ module.exports = {
                         try {
                             var fileString = fs.readFileSync(certPath);
                             res.setHeader('Content-Type', 'application/x-x509-ca-cert');
-                            res.setHeader("Content-Disposition","attachment;filename=node-mitmproxy.ca.crt");
+                            res.setHeader('Content-Disposition','attachment;filename=node-mitmproxy.ca.crt');
                             res.end(fileString.toString());
                         } catch (e) {
                             console.log(e);
@@ -120,7 +120,7 @@ module.exports = {
                                 var newkey = key.replace(/^[a-z]|-[a-z]/g, match => {
                                     return match.toUpperCase();
                                 });
-                                var newkey = key;
+                                newkey = key;
 
                                 if (
                                     isHtml &&
@@ -135,16 +135,16 @@ module.exports = {
 
                         res.writeHead(proxyRes.statusCode);
 
-                        var isGzip = httpUtil.isGzip(proxyRes);
+                        // var isGzip = httpUtil.isGzip(proxyRes); // TODO: May be needed for compression handling
 
-                        var chunks = []
+                        var chunks = [];
                         proxyRes.on('data', function (chunk) {
-                            chunks.push(chunk)
+                            chunks.push(chunk);
                         }).on('end', function () {
                             var allChunk = Buffer.concat(chunks);
 
-                            res.end(chunkReplace(allChunk, injectScriptTag, proxyRes))
-                        })
+                            res.end(chunkReplace(allChunk, injectScriptTag, proxyRes));
+                        });
                     }
                     next();
                 }
@@ -162,23 +162,23 @@ module.exports = {
                 childProxy.on('message', externalProxyPorts => {
                     ports = externalProxyPorts;
                     var externalProxyPort = externalProxyPorts.port;
-                    var externalProxyWebPort = externalProxyPorts.webPort;
+                    // var externalProxyWebPort = externalProxyPorts.webPort; // TODO: May be needed for web interface
                     externalProxy = 'http://127.0.0.1:' + externalProxyPort;
                     createMitmProxy();
                     successCB(externalProxyPorts);
                 });
                 let restartFun = () => {
-                    console.log(colors.yellow(`anyproxy异常退出，尝试重启`));
+                    console.log(colors.yellow('anyproxy异常退出，尝试重启'));
                     let childProxy = childProcess.fork(`${__dirname}/externalChildProcess`);
                     childProxy.send({
                         type: 'restart',
                         ports
                     });
-                    childProxy.on('exit', function(e) {
+                    childProxy.on('exit', function(_e) {
                         restartFun();
                     });
                 };
-                childProxy.on('exit', function(e) {
+                childProxy.on('exit', function(_e) {
                     restartFun();
                 });
             });

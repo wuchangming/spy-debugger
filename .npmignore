@@ -1,0 +1,31 @@
+# Development files
+src/
+test/
+.eslintrc.js
+.eslintignore
+.babelrc
+
+# Documentation
+README_EN.md
+design/
+demo/
+
+# Development dependencies
+node_modules/
+yarn.lock
+package-lock.json
+
+# CI/CD
+.travis.yml
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs and cache
+*.log
+.npm
+.cache

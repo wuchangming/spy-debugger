@@ -23,7 +23,11 @@
     "spy",
     "debugger",
     "weinre",
-    "https"
+    "https",
+    "proxy",
+    "mobile",
+    "debugging",
+    "remote-debug"
   ],
   "author": "wuchangming",
   "license": "MIT",
@@ -61,6 +65,6 @@
     "buildin_modules"
   ],
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10"
   }
 }
